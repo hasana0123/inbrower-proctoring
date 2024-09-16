@@ -1,0 +1,9 @@
+opencv-python
+numpy
+mediapipe
+fastapi
+uvicorn
+pyaudio
+matplotlib
+jinja2
+aiofiles
