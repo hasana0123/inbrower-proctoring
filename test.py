@@ -1,0 +1,302 @@
+import cv2 as cv
+import numpy as np
+import mediapipe as mp
+from fastapi import FastAPI, Form, Request, WebSocket
+from fastapi.responses import StreamingResponse, HTMLResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+import uvicorn
+import pyaudio
+import threading
+import time
+import io
+import base64  
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt 
+
+app = FastAPI()
+
+# For templates (HTML rendering)
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
+
+# Fake in-memory user storage
+fake_user_db = {"user": {"username": "user", "password": "password"},
+                "admin": {"username": "admin", "password": "adminpass"}}
+current_user = None
+
+# Face tracking setup
+mp_face_mesh = mp.solutions.face_mesh
+
+RIGHT_IRIS = [474, 475, 476, 477]
+LEFT_IRIS = [469, 470, 471, 472]
+L_H_LEFT = [33]
+L_H_RIGHT = [133]
+R_H_LEFT = [362]
+R_H_RIGHT = [263]
+
+eye_cheating = False
+head_cheating = False
+sound_detected = False
+video_feed_active = False
+
+test_duration = 30  # 5 minutes in seconds
+start_time = None
+cheating_data = []
+
+def eucidiean_distance(point1, point2):
+    x1, y1 = point1.ravel()
+    x2, y2 = point2.ravel()
+    distance = np.sqrt((x2 - x1) ** 2 + (y2 - y1) ** 2)
+    return distance
+
+def iris_position(iris_center, right_point, left_point):
+    center_to_right = eucidiean_distance(iris_center, right_point)
+    total_distance = eucidiean_distance(right_point, left_point)
+    gaze_ratio = center_to_right / total_distance
+
+    if gaze_ratio < 0.4:
+        return "RIGHT", gaze_ratio
+    elif 0.4 <= gaze_ratio <= 0.55:
+        return "CENTER", gaze_ratio
+    else:
+        return "LEFT", gaze_ratio
+    
+def detect_sound():
+    global sound_detected
+    # PyAudio setup for sound detection
+    FORMAT = pyaudio.paInt16  # Audio format (16-bit resolution)
+    CHANNELS = 1              # Mono channel
+    RATE = 44100              # Sampling rate (44.1kHz)
+    CHUNK = 1024              # Number of samples per chunk
+    THRESHOLD = 500           # Adjust this value based on your environment
+
+    # Initialize PyAudio object
+    p = pyaudio.PyAudio()
+
+    # Open stream
+    stream = p.open(format=FORMAT,
+                    channels=CHANNELS,
+                    rate=RATE,
+                    input=True,
+                    frames_per_buffer=CHUNK)
+
+    print("Listening for sound...")
+
+    try:
+        while True:
+            # Read audio data from the stream
+            data = np.frombuffer(stream.read(CHUNK), dtype=np.int16)
+
+            # Compute the average volume (amplitude)
+            volume = np.linalg.norm(data)
+
+            # Check if the volume exceeds the threshold
+            if volume > THRESHOLD:
+                sound_detected = True
+            else:
+                sound_detected = False
+
+            time.sleep(0.1)  # Adjust frequency of sound detection
+
+    except KeyboardInterrupt:
+        print("Audio detection stopped.")
+
+    # Stop and close the stream
+    stream.stop_stream()
+    stream.close()
+
+    # Terminate PyAudio object
+    p.terminate()
+
+# Start the audio detection in a background thread
+audio_thread = threading.Thread(target=detect_sound)
+audio_thread.daemon = True  # Ensure it closes with the main program
+audio_thread.start()
+
+def generate_video_feed():
+    global eye_cheating, head_cheating, video_feed_active
+    cap = cv.VideoCapture(0)
+    with mp_face_mesh.FaceMesh(max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5, min_tracking_confidence=0.5) as face_mesh:
+        while video_feed_active:
+            ret, frame = cap.read()
+            if not ret:
+                break
+            frame = cv.flip(frame, 1)
+            frame_rgb = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
+            img_h, img_w = frame.shape[:2]
+
+            if sound_detected:
+                cv.circle(frame, (600, 50), 20, (0, 0, 255), -1)  # Red dot
+
+            results = face_mesh.process(frame_rgb)
+            if results.multi_face_landmarks:
+                mesh_points = np.array([np.multiply([p.x, p.y], [img_w, img_h]).astype(int) for p in results.multi_face_landmarks[0].landmark])
+
+                (l_cx, l_cy), l_radius = cv.minEnclosingCircle(mesh_points[LEFT_IRIS])
+                (r_cx, r_cy), r_radius = cv.minEnclosingCircle(mesh_points[RIGHT_IRIS])
+                iris_center_left = np.array([l_cx, l_cy], dtype=np.int32)
+                iris_center_right = np.array([r_cx, r_cy], dtype=np.int32)
+
+                cv.circle(frame, iris_center_left, int(l_radius), (0, 255, 0), 1)
+                cv.circle(frame, iris_center_right, int(r_radius), (0, 255, 0), 1)
+
+                iris_pos, gaze_ratio = iris_position(iris_center_right, mesh_points[R_H_RIGHT][0], mesh_points[R_H_LEFT][0])
+                eye_cheating = iris_pos != "CENTER"
+                # cv.putText(frame, iris_pos, (50, 50), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2, cv.LINE_AA)
+                
+                for face_landmarks in results.multi_face_landmarks:
+                    face_2d = []
+                face_3d = []
+                for idx, lm in enumerate(face_landmarks.landmark):
+                    if idx in [33, 263, 1, 61, 291, 199]:
+                        if idx == 1:
+                            nose_2d = (lm.x * img_w, lm.y * img_h)
+                            nose_3d = (lm.x * img_w, lm.y * img_h, lm.z * 3000)
+                        x, y = int(lm.x * img_w), int(lm.y * img_h)
+                        face_2d.append([x, y])
+                        face_3d.append([x, y, lm.z])
+
+                face_2d = np.array(face_2d, dtype=np.float64)
+                face_3d = np.array(face_3d, dtype=np.float64)
+
+                focal_length = 1 * img_w
+                cam_matrix = np.array([[focal_length, 0, img_w / 2],
+                                       [0, focal_length, img_h / 2],
+                                       [0, 0, 1]])
+                distortion_matrix = np.zeros((4, 1), dtype=np.float64)
+
+                success, rotation_vec, translation_vec = cv.solvePnP(face_3d, face_2d, cam_matrix, distortion_matrix)
+                rmat, _ = cv.Rodrigues(rotation_vec)
+                angles, mtxR, mtxQ, Qx, Qy, Qz = cv.RQDecomp3x3(rmat)
+
+                x = angles[0] * 360
+                y = angles[1] * 360
+                z = angles[2] * 360
+
+                head_cheating = abs(y) > 10 or abs(x) > 10
+
+                if y < -10:
+                    text = "Looking Left"
+                elif y > 10:
+                    text = "Looking Right"
+                elif x < -7:
+                    text = "Looking Down"
+                elif x > 13:
+                    text = "Looking Up"
+                else:
+                    text = "Forward"
+
+                nose_3d_projection, jacobian = cv.projectPoints(nose_3d, rotation_vec, translation_vec, cam_matrix, distortion_matrix)
+                p1 = (int(nose_2d[0]), int(nose_2d[1]))
+                p2 = (int(nose_2d[0] + y * 10), int(nose_2d[1] - x * 10))
+
+                # cv.line(frame, p1, p2, (255, 0, 0), 3)
+                # cv.putText(frame, text, (20, 100), cv.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
+
+                cheating_votes = sum([eye_cheating, head_cheating, sound_detected])
+                is_cheating = cheating_votes >= 2
+
+                elapsed_time = time.time() - start_time
+                cheating_data.append((elapsed_time, is_cheating))
+
+                color = (0, 0, 255) if is_cheating else (0, 255, 0)
+                text = "CHEATING DETECTED" if is_cheating else "NO CHEATING DETECTED"
+                cv.putText(frame, text, (20, 50), cv.FONT_HERSHEY_SIMPLEX, 1, color, 2)
+
+            # Display individual module results
+                cv.putText(frame, f"Eye: {'Cheating' if eye_cheating else 'OK'}", (20, 100), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+                cv.putText(frame, f"Head: {'Cheating' if head_cheating else 'OK'}", (20, 130), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+                cv.putText(frame, f"Sound: {'Detected' if sound_detected else 'Not Detected'}", (20, 160), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+
+
+            _, buffer = cv.imencode('.jpg', frame)
+            frame = buffer.tobytes()
+
+            yield (b'--frame\r\n'
+                   b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+
+    cap.release()
+
+def generate_cheating_graph():
+    if not cheating_data:
+        return None
+    
+    times, cheating = zip(*cheating_data)
+    plt.figure(figsize=(10, 5))
+    plt.plot(times, cheating, 'r-')
+    plt.xlabel('Time (seconds)')
+    plt.ylabel('Cheating Detected')
+    plt.title('Cheating Instances Over Time')
+    plt.ylim(-0.1, 1.1)
+    plt.yticks([0, 1], ['No', 'Yes'])
+    
+    buf = io.BytesIO()
+    plt.savefig(buf, format='png')
+    buf.seek(0)
+    image_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
+    buf.close()
+    plt.close('all')  # Close the plot to free up memory
+    
+    return image_base64
+
+@app.get("/", response_class=HTMLResponse)
+async def login_page(request: Request):
+    return templates.TemplateResponse("login.html", {"request": request})
+
+
+@app.post("/login")
+async def login(username: str = Form(...), password: str = Form(...)):
+    if username in fake_user_db and password == fake_user_db[username]["password"]:
+        global current_user
+        current_user = username
+        if username == "admin":
+            return RedirectResponse(url="/admin", status_code=302)
+        return RedirectResponse(url="/dashboard", status_code=302)
+    return {"message": "Invalid credentials"}
+
+# @app.post("/login")
+# async def login(username: str = Form(...), password: str = Form(...)):
+#     if username == fake_user_db["user"]["username"] and password == fake_user_db["user"]["password"]:
+#         global current_user
+#         current_user = username
+#         return RedirectResponse(url="/dashboard", status_code=302)
+#     return {"message": "Invalid credentials"}
+
+@app.get("/dashboard", response_class=HTMLResponse)
+async def dashboard(request: Request):
+    if current_user:
+        return templates.TemplateResponse("dashboard.html", {"request": request, "user": current_user})
+    return RedirectResponse(url="/")
+
+@app.get("/admin", response_class=HTMLResponse)
+async def admin_dashboard(request: Request):
+    if current_user == "admin":
+        graph = generate_cheating_graph()
+        return templates.TemplateResponse("admin.html", {"request": request, "user": current_user, "graph": graph})
+    return RedirectResponse(url="/")
+
+@app.get("/video_feed")
+async def video_feed():
+    if current_user and video_feed_active:
+        return StreamingResponse(generate_video_feed(), media_type="multipart/x-mixed-replace; boundary=frame")
+    return RedirectResponse(url="/")
+
+@app.post("/toggle_video_feed")
+async def toggle_video_feed():
+    global video_feed_active, start_time, cheating_data
+    video_feed_active = not video_feed_active
+    if video_feed_active:
+        start_time = time.time()
+        cheating_data = []
+    return {"status": "active" if video_feed_active else "inactive"}
+
+# @app.post("/toggle_video_feed")
+# async def toggle_video_feed():
+#     global video_feed_active
+#     video_feed_active = not video_feed_active
+#     return {"status": "active" if video_feed_active else "inactive"}
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)
