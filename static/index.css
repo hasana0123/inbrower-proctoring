@@ -1,25 +1,27 @@
 #background {
     /* background-color: rgb(211, 233, 251); */
     /* justify-content: center; */
+    background-image: url(../images/bg1.jpg);
+    background-repeat: repeat-y;
+    background-size:cover ;
 }
 
 #header {
     display: flex;
     flex-direction: row;
-    /* justify-content: center; */
+    justify-content: center;
     align-items: center;
-    border: 2px solid red;
+    /* border: 2px solid red; */
     position: sticky;
-    background-color: rgb(189, 233, 255);
+    /* background-color: rgb(213, 234, 242); */
     /* margin: 0; */
+    /* padding: 10px; */
 }
 
 #logo img {
-    width: 45%;
+    width: 35%;
     height: auto;
-    border: 2px solid green;
-    /* justify-content: left; */
-    margin-left: 100px;
+    /* border: 2px solid green; */
     padding: 20px;
 
 }
@@ -27,19 +29,15 @@
 #navBar {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    border: 2px solid red;
-    padding: 5px;
+    /* border: 2px solid red; */
 }
 
 #navBar .aboutUs,
 #navBar .howItWork {
-    /* flex: 1; */
     text-align: center;
     justify-content: center;
     display: flex;
-    border: 2px solid green;
+    /* border: 2px solid green; */
     padding: 20px;
     
 }
@@ -47,21 +45,43 @@
 #navBar .aboutUs a,
 #navBar .howItWork a {
     margin: 0;
-    font-size: 25px;
+    font-size: 15px;
     display: inline-block;
     text-decoration: none;
-    border: 2px solid green;
-    background-color: black;
-    padding: 10px;
-    color: wheat;
+    /* border: 2px solid whitesmoke; */
+    background-color: rgba(210, 225, 242, 0.3);
+    padding: 15px;
+    color: rgb(0, 0, 0);
+    /* border-radius: 10px; */
+    
 }
 
 #content
 {
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     border: 2px solid black;
-    background-color: rgb(209, 222, 234);
-    padding: 200px;
+    /* background-color: rgb(209, 222, 234); */
+    /* padding: 20px; */
+    height: 500px;
+    display: flex;
+    flex-direction: row;
+}
+
+#content h1{
+    font-size: 50px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+#content .text
+{
     text-align: center;
+    border: 2px solid red;
+}
+
+#content .img
+{
+    justify-content: inherit;
+    height: 30%;
+    width: auto;
 }
