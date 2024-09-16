@@ -6,6 +6,24 @@
     <title>Cheating Detection Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="/static/styles.css">
+    <style>
+        /* Disable text selection for the entire page */
+        body {
+            user-select: none; /* Prevent text selection */
+        }
+        input, textarea, select {
+            user-select: none; /* Prevent text selection inside inputs */
+        }
+    </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Prevent copy, paste, and cut operations
+            document.addEventListener('copy', (e) => e.preventDefault());
+            document.addEventListener('paste', (e) => e.preventDefault());
+            document.addEventListener('cut', (e) => e.preventDefault());
+        });        
+    </script>
+    
     <!-- <style>
         body {
             font-family: Arial, sans-serif;
@@ -39,7 +57,10 @@
             <div class="question-list">
                 <h2>General Knowledge Questions</h2>
                 <ul>
-                    <li>What is the capital of Nepal?</li>
+                    <li>
+                        <p>What is the capital of Nepal?</p>                        
+                        <input type="text" name="question1" placeholder="Your answer">
+                    </li>
                     <li>Who painted the Mona Lisa?</li>
                     <li>What is the largest planet in our solar system?</li>
                     <li>What is the chemical symbol for gold?</li>
