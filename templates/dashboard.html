@@ -21,8 +21,35 @@
             document.addEventListener('copy', (e) => e.preventDefault());
             document.addEventListener('paste', (e) => e.preventDefault());
             document.addEventListener('cut', (e) => e.preventDefault());
-        });        
+    
+            // Function to request fullscreen mode
+            function enterFullscreen() {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+                    document.documentElement.msRequestFullscreen();
+                }
+            }
+    
+            // Enter fullscreen mode when the page is loaded
+            // enterFullscreen();
+
+            // Add a button to trigger fullscreen mode
+            const fullscreenButton = document.createElement('button');
+            fullscreenButton.innerText = 'Enter Fullscreen';
+            fullscreenButton.style.position = 'fixed';
+            fullscreenButton.style.top = '10px';
+            fullscreenButton.style.right = '10px';
+            fullscreenButton.style.zIndex = '1000';
+            fullscreenButton.addEventListener('click', enterFullscreen);
+            document.body.appendChild(fullscreenButton);
+            });
     </script>
+    
     
     <!-- <style>
         body {
