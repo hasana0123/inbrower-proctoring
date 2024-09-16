@@ -38,6 +38,17 @@
             filter: blur(10px); /* Blurs the content */
         }
 
+        /* Overlay to block interaction */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+            z-index: 1000; /* Ensure it appears above other elements */
+        }
+
         /* Style for the warning screen */
         .warning-screen {
             position: fixed;
@@ -54,11 +65,20 @@
 
         .warning-sign {
             font-size: 50px;
-            color: #B22222;
+            color: #8B0000;
             background-color: black;
             padding: 20px;
             border-radius: 12px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+        }
+        
+        /* Style for redirect link */
+        .redirect-link {
+            margin-top: 20px;
+            font-size: 18px;
+            color: #fff; 
+            text-decoration: underline;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -88,9 +108,13 @@
         </div>
     </div>
 
+    <!-- Overlay to block interactions -->
+    <div id="overlay" class="overlay"></div>
+
     <!-- Warning Screen -->
     <div id="warningScreen" class="warning-screen">
         <div class="warning-sign">WARNING</div>
+        <a href="login" class="redirect-link">Go to Login</a>
     </div>
 
     <script>
@@ -115,8 +139,9 @@
                 fullscreenButton.style.display = 'none';
                 // Show the content after fullscreen is entered
                 document.querySelector('.dashboard').style.display = 'block';
-                // Remove the background blur after entering fullscreen
+                // Remove the background blur and overlay after entering fullscreen
                 document.getElementById('content').classList.remove('blur');
+                document.getElementById('overlay').style.display = 'none';
             }
             
             // Function to handle exiting fullscreen mode
@@ -125,6 +150,7 @@
                 document.getElementById('warningScreen').style.display = 'flex';
                 // Apply blur to the background
                 document.getElementById('content').classList.add('blur');
+                document.getElementById('overlay').style.display = 'block';
             }
 
             // Listen for fullscreen change events
