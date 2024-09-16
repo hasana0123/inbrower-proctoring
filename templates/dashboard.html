@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheating Detection Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="/static/styles.css">
+    <!-- <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        #videoFeed {
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+        }
+        #toggleButton {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style> -->
+</head>
+<body>
+    <div class="dashboard">
+        <div class="header">
+            <h1>Welcome</h1>
+        </div>
+        <div class="content">
+            <div class="question-list">
+                <h2>General Knowledge Questions</h2>
+                <ul>
+                    <li>What is the capital of Nepal?</li>
+                    <li>Who painted the Mona Lisa?</li>
+                    <li>What is the largest planet in our solar system?</li>
+                    <li>What is the chemical symbol for gold?</li>
+                    <li>Who wrote "To Kill a Mockingbird"?</li>
+                </ul>
+            </div>
+        </div>
+        <div class="video-container">
+            <button id="toggleButton">Start Video Feed</button>
+            <img id="videoFeed" style="display: none;" alt="Video Feed">
+        </div>
+    </div>
+
+    <script>
+        const toggleButton = document.getElementById('toggleButton');
+        const videoFeed = document.getElementById('videoFeed');
+        let isActive = false;
+
+        toggleButton.addEventListener('click', async () => {
+            try {
+                const response = await axios.post('/toggle_video_feed');
+                isActive = response.data.status === 'active';
+                toggleButton.textContent = isActive ? 'Stop Video Feed' : 'Start Video Feed';
+                videoFeed.style.display = isActive ? 'block' : 'none';
+                if (isActive) {
+                    videoFeed.src = '/video_feed';
+                } else {
+                    videoFeed.src = '';
+                }
+            } catch (error) {
+                console.error('Error toggling video feed:', error);
+            }
+        });
+    </script>
+</body>
+</html>
