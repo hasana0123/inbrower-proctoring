@@ -33,22 +33,30 @@
                 } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
                     document.documentElement.msRequestFullscreen();
                 }
+                // Remove the fullscreen button after fullscreen is requested
+                fullscreenButton.style.display = 'none';
+                // Show the content after fullscreen is entered
+                document.querySelector('.dashboard').style.display = 'block';
             }
     
-            // Enter fullscreen mode when the page is loaded
-            // enterFullscreen();
-
-            // Add a button to trigger fullscreen mode
+            // Create a fullscreen button
             const fullscreenButton = document.createElement('button');
             fullscreenButton.innerText = 'Enter Fullscreen';
             fullscreenButton.style.position = 'fixed';
-            fullscreenButton.style.top = '10px';
-            fullscreenButton.style.right = '10px';
+            fullscreenButton.style.top = '50%';
+            fullscreenButton.style.left = '50%';
+            fullscreenButton.style.transform = 'translate(-50%, -50%)';
+            fullscreenButton.style.padding = '20px';
+            fullscreenButton.style.fontSize = '18px';
             fullscreenButton.style.zIndex = '1000';
             fullscreenButton.addEventListener('click', enterFullscreen);
             document.body.appendChild(fullscreenButton);
-            });
+    
+            // Hide the dashboard content initially
+            document.querySelector('.dashboard').style.display = 'none';
+        });
     </script>
+    
     
     
     <!-- <style>
