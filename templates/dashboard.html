@@ -37,6 +37,8 @@
                 fullscreenButton.style.display = 'none';
                 // Show the content after fullscreen is entered
                 document.querySelector('.dashboard').style.display = 'block';
+                // Remove the background blur after entering fullscreen
+                document.getElementById('content').style.filter = 'none';
             }
     
             // Create a fullscreen button
@@ -48,16 +50,21 @@
             fullscreenButton.style.transform = 'translate(-50%, -50%)';
             fullscreenButton.style.padding = '20px';
             fullscreenButton.style.fontSize = '18px';
+            fullscreenButton.style.backgroundColor = '#009688'; // Stylish green color
+            fullscreenButton.style.color = '#fff'; // White text
+            fullscreenButton.style.border = 'none'; // Remove default border
+            fullscreenButton.style.borderRadius = '12px'; // Rounded corners
+            fullscreenButton.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.3)'; // Subtle shadow
+            fullscreenButton.style.cursor = 'pointer'; // Pointer cursor on hover
+            fullscreenButton.style.transition = 'background-color 0.3s, transform 0.2s'; // Smooth transitions
             fullscreenButton.style.zIndex = '1000';
             fullscreenButton.addEventListener('click', enterFullscreen);
             document.body.appendChild(fullscreenButton);
     
-            // Hide the dashboard content initially
-            document.querySelector('.dashboard').style.display = 'none';
+            // Apply blur to the background
+            document.getElementById('content').style.filter = 'blur(10px)'; // Blurs the content
         });
     </script>
-    
-    
     
     <!-- <style>
         body {
@@ -84,7 +91,7 @@
     </style> -->
 </head>
 <body>
-    <div class="dashboard">
+    <div id="content" class="dashboard">
         <div class="header">
             <h1>Welcome</h1>
         </div>
@@ -99,7 +106,7 @@
                     <li>Who painted the Mona Lisa?</li>
                     <li>What is the largest planet in our solar system?</li>
                     <li>What is the chemical symbol for gold?</li>
-                    <li>Who wrote "To Kill a Mockingbird"?</li>
+                    <li>Who wrote "To Kill a Mockingbird" novel?</li>
                 </ul>
             </div>
         </div>
