@@ -130,3 +130,36 @@ body {
   li {
     margin-bottom: 10px;
   }
+
+  .user-list {
+    list-style-type: none;
+    padding: 0;
+    margin-bottom: 20px;
+  }
+
+ .user-button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    border-radius: 4px;
+ }
+
+ .user-button:hover {
+    background-color: #45a049;
+ }
+
+ #graph-container {
+    margin-top: 20px;
+ }
+
+ #graph-container img {
+    max-width: 100%;
+    height: auto;
+ }

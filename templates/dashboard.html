@@ -6,29 +6,6 @@
     <title>Cheating Detection Dashboard</title>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link rel="stylesheet" href="/static/styles.css">
-    <!-- <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-        }
-        h1 {
-            color: #333;
-        }
-        #videoFeed {
-            margin-top: 20px;
-            max-width: 100%;
-            height: auto;
-        }
-        #toggleButton {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-    </style> -->
 </head>
 <body>
     <div class="dashboard">
@@ -65,7 +42,7 @@
                 toggleButton.textContent = isActive ? 'Stop Video Feed' : 'Start Video Feed';
                 videoFeed.style.display = isActive ? 'block' : 'none';
                 if (isActive) {
-                    videoFeed.src = '/video_feed';
+                    videoFeed.src = '/video_feed/{{ user }}';
                 } else {
                     videoFeed.src = '';
                 }
