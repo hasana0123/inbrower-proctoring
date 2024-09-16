@@ -14,81 +14,30 @@
         input, textarea, select {
             user-select: none; /* Prevent text selection inside inputs */
         }
-    </style>
-    <script>
-        document.addEventListener('DOMContentLoaded', (event) => {
-            // Prevent copy, paste, and cut operations
-            document.addEventListener('copy', (e) => e.preventDefault());
-            document.addEventListener('paste', (e) => e.preventDefault());
-            document.addEventListener('cut', (e) => e.preventDefault());
-    
-            // Function to request fullscreen mode
-            function enterFullscreen() {
-                if (document.documentElement.requestFullscreen) {
-                    document.documentElement.requestFullscreen();
-                } else if (document.documentElement.mozRequestFullScreen) { // Firefox
-                    document.documentElement.mozRequestFullScreen();
-                } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
-                    document.documentElement.webkitRequestFullscreen();
-                } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
-                    document.documentElement.msRequestFullscreen();
-                }
-                // Remove the fullscreen button after fullscreen is requested
-                fullscreenButton.style.display = 'none';
-                // Show the content after fullscreen is entered
-                document.querySelector('.dashboard').style.display = 'block';
-                // Remove the background blur after entering fullscreen
-                document.getElementById('content').style.filter = 'none';
-            }
-    
-            // Create a fullscreen button
-            const fullscreenButton = document.createElement('button');
-            fullscreenButton.innerText = 'Enter Fullscreen';
-            fullscreenButton.style.position = 'fixed';
-            fullscreenButton.style.top = '50%';
-            fullscreenButton.style.left = '50%';
-            fullscreenButton.style.transform = 'translate(-50%, -50%)';
-            fullscreenButton.style.padding = '20px';
-            fullscreenButton.style.fontSize = '18px';
-            fullscreenButton.style.backgroundColor = '#009688'; // Stylish green color
-            fullscreenButton.style.color = '#fff'; // White text
-            fullscreenButton.style.border = 'none'; // Remove default border
-            fullscreenButton.style.borderRadius = '12px'; // Rounded corners
-            fullscreenButton.style.boxShadow = '0 4px 8px rgba(0, 0, 0, 0.3)'; // Subtle shadow
-            fullscreenButton.style.cursor = 'pointer'; // Pointer cursor on hover
-            fullscreenButton.style.transition = 'background-color 0.3s, transform 0.2s'; // Smooth transitions
-            fullscreenButton.style.zIndex = '1000';
-            fullscreenButton.addEventListener('click', enterFullscreen);
-            document.body.appendChild(fullscreenButton);
-    
-            // Apply blur to the background
-            document.getElementById('content').style.filter = 'blur(10px)'; // Blurs the content
-        });
-    </script>
-    
-    <!-- <style>
-        body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+
+        /* Style for the fullscreen button */
+        .fullscreen-button {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             padding: 20px;
+            font-size: 18px;
+            background-color: #009688; /* Stylish green color */
+            color: #fff; /* White text */
+            border: none; /* Remove default border */
+            border-radius: 12px; /* Rounded corners */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow */
+            cursor: pointer; /* Pointer cursor on hover */
+            transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
+            z-index: 1000; /* Ensure it appears above other elements */
         }
-        h1 {
-            color: #333;
+
+        /* Apply blur to the background */
+        #content.blur {
+            filter: blur(10px); /* Blurs the content */
         }
-        #videoFeed {
-            margin-top: 20px;
-            max-width: 100%;
-            height: auto;
-        }
-        #toggleButton {
-            margin-top: 20px;
-            padding: 10px 20px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-    </style> -->
+    </style>
 </head>
 <body>
     <div id="content" class="dashboard">
@@ -117,6 +66,42 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            // Prevent copy, paste, and cut operations
+            document.addEventListener('copy', (e) => e.preventDefault());
+            document.addEventListener('paste', (e) => e.preventDefault());
+            document.addEventListener('cut', (e) => e.preventDefault());
+
+            // Function to request fullscreen mode
+            function enterFullscreen() {
+                if (document.documentElement.requestFullscreen) {
+                    document.documentElement.requestFullscreen();
+                } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+                    document.documentElement.mozRequestFullScreen();
+                } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
+                    document.documentElement.webkitRequestFullscreen();
+                } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+                    document.documentElement.msRequestFullscreen();
+                }
+                // Remove the fullscreen button after fullscreen is requested
+                fullscreenButton.style.display = 'none';
+                // Show the content after fullscreen is entered
+                document.querySelector('.dashboard').style.display = 'block';
+                // Remove the background blur after entering fullscreen
+                document.getElementById('content').classList.remove('blur');
+            }
+            
+            // Create a fullscreen button
+            const fullscreenButton = document.createElement('button');
+            fullscreenButton.innerText = 'Enter Fullscreen';
+            fullscreenButton.className = 'fullscreen-button'; // Apply CSS class
+            fullscreenButton.addEventListener('click', enterFullscreen);
+            document.body.appendChild(fullscreenButton);
+
+            // Apply blur to the background
+            document.getElementById('content').classList.add('blur'); // Blurs the content
+        });
+
         const toggleButton = document.getElementById('toggleButton');
         const videoFeed = document.getElementById('videoFeed');
         let isActive = false;
@@ -139,3 +124,4 @@
     </script>
 </body>
 </html>
+
