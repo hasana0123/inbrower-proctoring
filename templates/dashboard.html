@@ -80,14 +80,32 @@
             text-decoration: underline;
             cursor: pointer;
         }
+
+        /* Blur effect for questions */
+        .questions-blur {
+            filter: blur(10px); /* Initial blur effect */
+        }
+
+        /* Block interaction with content */
+        .interaction-block {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0); /* Transparent background */
+            z-index: 1000; /* Ensure it appears above other elements */
+            pointer-events: auto; /* Allow interaction blocking */
+        }
     </style>
 </head>
 <body>
-    <div id="content" class="dashboard">
+    <div id="content" class="dashboard blur">
         <div class="header">
             <h1>Welcome</h1>
         </div>
-        <div class="content">
+        <div class="content questions-blur">
+            <div class="interaction-block" id="interactionBlock"></div>
             <div class="question-list">
                 <h2>General Knowledge Questions</h2>
                 <ul>
@@ -119,10 +137,8 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
-            // Prevent copy, paste, and cut operations
-            document.addEventListener('copy', (e) => e.preventDefault());
-            document.addEventListener('paste', (e) => e.preventDefault());
-            document.addEventListener('cut', (e) => e.preventDefault());
+            let isFullscreen = false;
+            let isVideoActive = false;
 
             // Function to request fullscreen mode
             function enterFullscreen() {
@@ -137,13 +153,13 @@
                 }
                 // Remove the fullscreen button after fullscreen is requested
                 fullscreenButton.style.display = 'none';
-                // Show the content after fullscreen is entered
-                document.querySelector('.dashboard').style.display = 'block';
                 // Remove the background blur and overlay after entering fullscreen
                 document.getElementById('content').classList.remove('blur');
                 document.getElementById('overlay').style.display = 'none';
+                isFullscreen = true;
+                checkConditions();
             }
-            
+
             // Function to handle exiting fullscreen mode
             function handleFullscreenExit() {
                 // Show warning screen
@@ -151,6 +167,19 @@
                 // Apply blur to the background
                 document.getElementById('content').classList.add('blur');
                 document.getElementById('overlay').style.display = 'block';
+                isFullscreen = false;
+                checkConditions();
+            }
+
+            // Function to check if both conditions are met
+            function checkConditions() {
+                if (isFullscreen && isVideoActive) {
+                    document.querySelector('.content').classList.remove('questions-blur'); // Remove blur from questions
+                    document.getElementById('interactionBlock').style.display = 'none'; // Allow interaction
+                } else {
+                    document.querySelector('.content').classList.add('questions-blur'); // Ensure questions are blurred
+                    document.getElementById('interactionBlock').style.display = 'block'; // Block interaction
+                }
             }
 
             // Listen for fullscreen change events
@@ -184,26 +213,26 @@
 
             // Apply blur to the background
             document.getElementById('content').classList.add('blur'); // Blurs the content
-        });
 
-        const toggleButton = document.getElementById('toggleButton');
-        const videoFeed = document.getElementById('videoFeed');
-        let isActive = false;
+            const toggleButton = document.getElementById('toggleButton');
+            const videoFeed = document.getElementById('videoFeed');
 
-        toggleButton.addEventListener('click', async () => {
-            try {
-                const response = await axios.post('/toggle_video_feed');
-                isActive = response.data.status === 'active';
-                toggleButton.textContent = isActive ? 'Stop Video Feed' : 'Start Video Feed';
-                videoFeed.style.display = isActive ? 'block' : 'none';
-                if (isActive) {
-                    videoFeed.src = '/video_feed';
-                } else {
-                    videoFeed.src = '';
+            toggleButton.addEventListener('click', async () => {
+                try {
+                    const response = await axios.post('/toggle_video_feed');
+                    isVideoActive = response.data.status === 'active';
+                    toggleButton.textContent = isVideoActive ? 'Stop Video Feed' : 'Start Video Feed';
+                    videoFeed.style.display = isVideoActive ? 'block' : 'none';
+                    if (isVideoActive) {
+                        videoFeed.src = '/video_feed';
+                    } else {
+                        videoFeed.src = '';
+                    }
+                    checkConditions();
+                } catch (error) {
+                    console.error('Error toggling video feed:', error);
                 }
-            } catch (error) {
-                console.error('Error toggling video feed:', error);
-            }
+            });
         });
     </script>
 </body>
