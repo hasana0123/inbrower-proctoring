@@ -265,6 +265,20 @@ def generate_cheating_graph(username):
     return image_base64
 
 @app.get("/", response_class=HTMLResponse)
+async def index_page(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+# Route to render aboutUs.html
+@app.get("/aboutUs", response_class=HTMLResponse)
+async def get_about_us(request: Request):
+    return templates.TemplateResponse("aboutUs.html", {"request": request})
+
+# Route to render howItWorks.html
+@app.get("/howItWorks", response_class=HTMLResponse)
+async def get_how_it_works(request: Request):
+    return templates.TemplateResponse("howItWorks.html", {"request": request})
+
+@app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
