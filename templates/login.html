@@ -7,6 +7,17 @@
   <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
+  <div id="header">
+    <div id="Logo">
+        <a href="/">
+            <img src="/static/images/InvigilAI.png" alt="InvigilAI" />
+        </a>
+    </div>
+    <div id="navBar">
+        <a href="/aboutUs"> About us</a>
+        <a href="/howItWorks"> How does it Work?</a>
+    </div>
+</div>
   <div class="login-container">
     <h2 class="login-title">Login</h2>
     <form method="POST" action="/login">
@@ -18,7 +29,7 @@
       </div>
       <button type="submit">Login</button>
     </form>
-    <p class="message">{{ msg }}</p>
+    <p class="message">Forgot Password?</p>
   </div>
 </body>
 </html>

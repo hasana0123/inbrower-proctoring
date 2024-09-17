@@ -1,0 +1,141 @@
+#background {
+    background-image: url(/static/images/bg1.jpg);
+    background-repeat: repeat-y;
+    background-size:cover ;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+#header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    /* border: 2px solid red; */
+    position: sticky;
+    background-color: rgba(255, 255, 255, 0.2);
+    position: sticky;
+    z-index: 100;
+    top: 0;
+    /* background-color: rgb(213, 234, 242); */
+    /* margin: 0; */
+    padding: 20px;
+    height: 200px;
+}
+
+#logo img {
+    width: 45%;
+    height: auto;
+    /* border: 2px solid green; */
+    padding: 20px;
+
+}
+
+#navBar {
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    /* border: 2px solid red; */
+}
+
+#navBar .aboutUs,
+#navBar .howItWork {
+    text-align: center;
+    justify-content: center;
+    display: flex;
+    /* border: 2px solid green; */
+    padding: 20px;
+    font-size: 16px;
+    text-decoration: none;
+    padding: 10px 20px;
+    color: black;
+    transition: background-color 0.3s ease;
+    /* background-color:  rgba(210, 225, 242); */
+    
+}
+
+#navBar .aboutUs a,
+#navBar .howItWork a {
+    margin: 0;
+    font-size: 16px;
+    display: inline-block;
+    text-decoration: none;
+    border: 2px solid rgb(179, 213, 251);
+    background-color: rgba(210, 225, 242, 0.3);
+    padding: 15px;
+    color: rgb(0, 0, 0);
+    border-radius: 3px;
+    border-width: 1px;
+    
+}
+
+#navBar .aboutUs a:hover,
+#navBar .howItWork a:hover
+{
+    /* font-size: 20px; */
+    color: rgb(198, 230, 187);
+    background-color: rgba(100, 150, 200, 0.8) ;
+}
+
+#content
+{
+    justify-content: space-between;
+    align-items: center;
+    /* border: 2px solid black; */
+    background-color: rgb(0, 0, 0,0.2);
+    padding: 40px;
+    height: 500px;
+    display: flex;
+    flex-direction: row;
+}
+
+#content h1{
+    font-size: 50px;
+    font-family: 'Times New Roman', Times, serif;
+    margin-bottom: 10px;
+}
+
+#content .text
+{
+    text-align: center;
+    /* border: 2px solid red; */
+}
+
+#content h3 {
+    font-size: 30px;
+}
+
+#continueButton a button {
+    padding: 10px 20px; /* Added padding to the button for better size */
+    font-size: 18px; /* Increased font size for readability */
+    background-color: rgb(70, 130, 180); /* Changed button background color */
+    color: white;
+    border: none;
+    border-radius: 5px; /* Rounded the button corners */
+    cursor: pointer;
+    transition: background-color 0.3s ease; /* Added smooth transition on hover */
+}
+#continueButton a button:hover {
+    background-color: rgb(50, 100, 150); /* Darkened the button color on hover */
+}
+#content .sideImage img
+{
+    /* justify-content: inherit; */
+    max-width: 400px;
+    flex: 1;
+    height: 50%;
+    width: auto;
+}
+
+body, h1, h3, a, button {
+    margin: 0; /* Removed default margins */
+    padding: 0; /* Removed default padding */
+    box-sizing: border-box; /* Ensures padding and border don't affect the size */
+}
+
+/* Body settings */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0; /* Light background color for the body */
+    margin: 0; /* Removed default body margin */
+}

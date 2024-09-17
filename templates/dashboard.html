@@ -152,7 +152,12 @@
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             let isFullscreen = false;
-            let isVideoActive = false;
+            // let isVideoActive = false;
+
+            // Prevent copy, paste, and cut operations
+            document.addEventListener('copy', (e) => e.preventDefault());
+            document.addEventListener('paste', (e) => e.preventDefault());
+            document.addEventListener('cut', (e) => e.preventDefault());
 
             // Function to request fullscreen mode
             function enterFullscreen() {
@@ -230,6 +235,7 @@
 
             const toggleButton = document.getElementById('toggleButton');
             const videoFeed = document.getElementById('videoFeed');
+            let isActive = false;
 
             toggleButton.addEventListener('click', async () => {
                 try {
@@ -238,7 +244,7 @@
                     toggleButton.textContent = isVideoActive ? 'Stop Video Feed' : 'Start Video Feed';
                     videoFeed.style.display = isVideoActive ? 'block' : 'none';
                     if (isVideoActive) {
-                        videoFeed.src = '/video_feed';
+                        videoFeed.src = '/video_feed/{{ user }}';
                     } else {
                         videoFeed.src = '';
                     }
