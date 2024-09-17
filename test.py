@@ -22,9 +22,17 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 templates = Jinja2Templates(directory="templates")
 
 # Fake in-memory user storage
-fake_user_db = {"user": {"username": "user", "password": "password"},
-                "admin": {"username": "admin", "password": "adminpass"}}
+fake_user_db = {
+    "user1": {"username": "user1", "password": "password1"},
+    "user2": {"username": "user2", "password": "password2"},
+    "user3": {"username": "user3", "password": "password3"},
+    "user4": {"username": "user4", "password": "password4"},
+    "user5": {"username": "user5", "password": "password5"},
+    "admin": {"username": "admin", "password": "adminpass"}
+}
 current_user = None
+
+user_cheating_data = {user: [] for user in fake_user_db if user != "admin"}
 
 # Face tracking setup
 mp_face_mesh = mp.solutions.face_mesh
@@ -40,6 +48,7 @@ eye_cheating = False
 head_cheating = False
 sound_detected = False
 video_feed_active = False
+video_cap = None
 
 test_duration = 30  # 5 minutes in seconds
 start_time = None
@@ -111,11 +120,23 @@ def detect_sound():
     p.terminate()
 
 # Start the audio detection in a background thread
-audio_thread = threading.Thread(target=detect_sound)
-audio_thread.daemon = True  # Ensure it closes with the main program
-audio_thread.start()
+# audio_thread = threading.Thread(target=detect_sound)
+# audio_thread.daemon = True  # Ensure it closes with the main program
+# audio_thread.start()
 
-def generate_video_feed():
+def start_audio_detection():
+    global audio_detection_active
+    audio_detection_active = True
+    audio_thread = threading.Thread(target=detect_sound)
+    audio_thread.daemon = True  # Ensure it closes with the main program
+    audio_thread.start()
+
+def stop_audio_detection():
+    global audio_detection_active
+    audio_detection_active = False
+    print("Audio detection stopped.")
+
+def generate_video_feed(username):
     global eye_cheating, head_cheating, video_feed_active
     cap = cv.VideoCapture(0)
     with mp_face_mesh.FaceMesh(max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5, min_tracking_confidence=0.5) as face_mesh:
@@ -199,7 +220,8 @@ def generate_video_feed():
                 is_cheating = cheating_votes >= 2
 
                 elapsed_time = time.time() - start_time
-                cheating_data.append((elapsed_time, is_cheating))
+                user_cheating_data[username].append((elapsed_time, is_cheating))
+                # cheating_data.append((elapsed_time, is_cheating))
 
                 color = (0, 0, 255) if is_cheating else (0, 255, 0)
                 text = "CHEATING DETECTED" if is_cheating else "NO CHEATING DETECTED"
@@ -219,16 +241,17 @@ def generate_video_feed():
 
     cap.release()
 
-def generate_cheating_graph():
-    if not cheating_data:
+
+def generate_cheating_graph(username):
+    if not user_cheating_data[username]:
         return None
     
-    times, cheating = zip(*cheating_data)
+    times, cheating = zip(*user_cheating_data[username])
     plt.figure(figsize=(10, 5))
     plt.plot(times, cheating, 'r-')
     plt.xlabel('Time (seconds)')
     plt.ylabel('Cheating Detected')
-    plt.title('Cheating Instances Over Time')
+    plt.title(f'Cheating Instances Over Time for {username}')
     plt.ylim(-0.1, 1.1)
     plt.yticks([0, 1], ['No', 'Yes'])
     
@@ -237,11 +260,25 @@ def generate_cheating_graph():
     buf.seek(0)
     image_base64 = base64.b64encode(buf.getvalue()).decode('utf-8')
     buf.close()
-    plt.close('all')  # Close the plot to free up memory
+    plt.close('all')
     
     return image_base64
 
 @app.get("/", response_class=HTMLResponse)
+async def index_page(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+# Route to render aboutUs.html
+@app.get("/aboutUs", response_class=HTMLResponse)
+async def get_about_us(request: Request):
+    return templates.TemplateResponse("aboutUs.html", {"request": request})
+
+# Route to render howItWorks.html
+@app.get("/howItWorks", response_class=HTMLResponse)
+async def get_how_it_works(request: Request):
+    return templates.TemplateResponse("howItWorks.html", {"request": request})
+
+@app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
@@ -270,26 +307,54 @@ async def dashboard(request: Request):
         return templates.TemplateResponse("dashboard.html", {"request": request, "user": current_user})
     return RedirectResponse(url="/")
 
+# @app.get("/admin", response_class=HTMLResponse)
+# async def admin_dashboard(request: Request):
+#     if current_user == "admin":
+#         graph = generate_cheating_graph()
+#         return templates.TemplateResponse("admin.html", {"request": request, "user": current_user, "graph": graph})
+#     return RedirectResponse(url="/")
+
 @app.get("/admin", response_class=HTMLResponse)
 async def admin_dashboard(request: Request):
     if current_user == "admin":
-        graph = generate_cheating_graph()
-        return templates.TemplateResponse("admin.html", {"request": request, "user": current_user, "graph": graph})
+        users = [u for u in fake_user_db if u != "admin"]
+        return templates.TemplateResponse("admin.html", {"request": request, "users": users})
     return RedirectResponse(url="/")
 
-@app.get("/video_feed")
-async def video_feed():
+@app.get("/admin/user/{username}")
+async def admin_user_dashboard(username: str):
+    if current_user == "admin":
+        graph = generate_cheating_graph(username)
+        if graph:
+            return HTMLResponse(f'<img src="data:image/png;base64,{graph}" alt="Cheating Graph for {username}">')
+        return HTMLResponse('<p>No data available for this user.</p>')
+    raise HTTPException(status_code=403, detail="Not authorized")
+
+# @app.get("/video_feed")
+# async def video_feed():
+#     if current_user and video_feed_active:
+#         return StreamingResponse(generate_video_feed(), media_type="multipart/x-mixed-replace; boundary=frame")
+#     return RedirectResponse(url="/")
+
+@app.get("/video_feed/{username}")
+async def video_feed(username: str):
     if current_user and video_feed_active:
-        return StreamingResponse(generate_video_feed(), media_type="multipart/x-mixed-replace; boundary=frame")
+        return StreamingResponse(generate_video_feed(username), media_type="multipart/x-mixed-replace; boundary=frame")
     return RedirectResponse(url="/")
 
 @app.post("/toggle_video_feed")
 async def toggle_video_feed():
-    global video_feed_active, start_time, cheating_data
+    global video_feed_active, start_time, cheating_data, video_cap
     video_feed_active = not video_feed_active
     if video_feed_active:
         start_time = time.time()
         cheating_data = []
+        start_audio_detection()  # Start audio detection along with video feed
+    else:
+        stop_audio_detection()  # Stop audio detection when video feed stops
+        if video_cap is not None:
+            video_cap.release()  # Release the camera
+            video_cap = None  # Reset the capture object
     return {"status": "active" if video_feed_active else "inactive"}
 
 # @app.post("/toggle_video_feed")
