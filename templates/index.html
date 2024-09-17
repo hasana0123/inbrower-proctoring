@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <link rel="stylesheet" href="../static/styles.css" />
+        <link rel="stylesheet" href="../static/index.css" />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>InvigilAI</title>
@@ -10,22 +11,33 @@
     <body>
         <div id="background">
             <div id="header">
-                <div id="Logo">
+                <div id="logo">
                     <a href="/">
-                        <img src="/static/images/InvigilAI.png" alt="InvigilAI" />
+                        <img src="/static/images/InvigilAI.png" alt="" />
                     </a>
                 </div>
                 <div id="navBar">
-                    <a href="/aboutUs"> About us</a>
-                    <a href="/howItWorks"> How does it Work?</a>
+                    <div class="aboutUs">
+                        <a href="/aboutUs">About Us</a>
+                    </div>
+                    <div class="howItWork">
+                        <a href="/howItWorks"> How does it Work ?</a>
+                    </div>
                 </div>
             </div>
             <div id="content">
-                <h1>
-                    InvigilAI
-                    <h3>Welcome!</h3>
-                </h1>
-                <div id="continueButton"><button onclick="window.location.href='/login'">Login</button></div>
+                <div class="text">
+                    <h1>
+                        InvigilAI
+                        <h3>Welcome!</h3>
+                    </h1>
+                    <div id="continueButton">
+                        <a href="/login"><button>Continue</button></a>
+                    </div>
+                </div>
+                <div class="sideImage">
+                    <img src="/static/images/sidemapicture.png" alt="" />
+                </div>
             </div>
         </div>
     </body>
