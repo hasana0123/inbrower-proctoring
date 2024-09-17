@@ -1,5 +1,5 @@
 #background {
-    background-image: url(../images/bg1.jpg);
+    background-image: url(/static/images/bg1.jpg);
     background-repeat: repeat-y;
     background-size:cover ;
     padding: 20px;

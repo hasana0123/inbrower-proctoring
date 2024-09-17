@@ -328,13 +328,7 @@ async def admin_user_dashboard(username: str):
         if graph:
             return HTMLResponse(f'<img src="data:image/png;base64,{graph}" alt="Cheating Graph for {username}">')
         return HTMLResponse('<p>No data available for this user.</p>')
-    raise HTTPException(status_code=403, detail="Not authorized")
-
-# @app.get("/video_feed")
-# async def video_feed():
-#     if current_user and video_feed_active:
-#         return StreamingResponse(generate_video_feed(), media_type="multipart/x-mixed-replace; boundary=frame")
-#     return RedirectResponse(url="/")
+    # raise HTTPException(status_code=403, detail="Not authorized")
 
 @app.get("/video_feed/{username}")
 async def video_feed(username: str):
@@ -356,12 +350,6 @@ async def toggle_video_feed():
             video_cap.release()  # Release the camera
             video_cap = None  # Reset the capture object
     return {"status": "active" if video_feed_active else "inactive"}
-
-# @app.post("/toggle_video_feed")
-# async def toggle_video_feed():
-#     global video_feed_active
-#     video_feed_active = not video_feed_active
-#     return {"status": "active" if video_feed_active else "inactive"}
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
