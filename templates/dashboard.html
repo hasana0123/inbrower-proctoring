@@ -38,6 +38,17 @@
             filter: blur(10px); /* Blurs the content */
         }
 
+        /* Overlay to block interaction */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+            z-index: 1000; /* Ensure it appears above other elements */
+        }
+
         /* Style for the warning screen */
         .warning-screen {
             position: fixed;
@@ -61,31 +72,66 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow */
         }
         
-        /* Style for redirect link */
+        /* Style for redirect button */
         .redirect-link {
+            display: inline-block; /* Make it behave like a button */
             margin-top: 20px;
+            padding: 10px 20px; /* Add some padding for better touch interaction */
             font-size: 18px;
-            color: #fff; 
-            text-decoration: underline;
-            cursor: pointer;
+            color: #fff;
+            background-color: #009688; /* Match the stylish green color used elsewhere */
+            border: none; /* Remove default button borders */
+            border-radius: 8px; /* Smooth, rounded corners */
+            text-decoration: none; /* Remove underline from link-style text */
+            cursor: pointer; /* Change cursor to pointer on hover */
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Add smooth hover transitions */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
+        }
+
+        .redirect-link:hover {
+            background-color: #00796b; /* Darken the green on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+
+        .redirect-link:active {
+            background-color: #004d40; /* Darker green on active press */
+            transform: translateY(0); /* Remove lift effect */
+        }
+
+        /* Blur effect for questions */
+        .questions-blur {
+            filter: blur(10px); /* Initial blur effect */
+        }
+
+        /* Block interaction with content */
+        .interaction-block {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0); /* Transparent background */
+            z-index: 1000; /* Ensure it appears above other elements */
+            pointer-events: auto; /* Allow interaction blocking */
         }
     </style>
 </head>
 <body>
-    <div class="dashboard">
+    <div id="content" class="dashboard blur">
         <div class="header">
             <h1>Welcome</h1>
         </div>
-        <div class="content">
+        <div class="content questions-blur">
+            <div class="interaction-block" id="interactionBlock"></div>
             <div class="question-list">
                 <h2>General Knowledge Questions</h2>
-                <ul>
-                    <li>What is the capital of Nepal?</li>
-                    <li>Who painted the Mona Lisa?</li>
-                    <li>What is the largest planet in our solar system?</li>
-                    <li>What is the chemical symbol for gold?</li>
-                    <li>Who wrote "To Kill a Mockingbird"?</li>
-                </ul>
+                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSc8xCbgchE2A97_tPbQS6UgT-_V_7dy9NpE8gcG-rAEj-qnkg/viewform?embedded=true" 
+                width="640" 
+                height="1390" 
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0">
+                </iframe>
             </div>
         </div>
         <div class="video-container">
@@ -94,14 +140,20 @@
         </div>
     </div>
 
+    <!-- Overlay to block interactions -->
+    <div id="overlay" class="overlay"></div>
+
     <!-- Warning Screen -->
     <div id="warningScreen" class="warning-screen">
         <div class="warning-sign">WARNING</div>
-        <a href="/login" class="redirect-link">Go to Login</a>
+        <button class="redirect-link" onclick="window.location.href='login'">Go to Login</button>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
+            let isFullscreen = false;
+            // let isVideoActive = false;
+
             // Prevent copy, paste, and cut operations
             document.addEventListener('copy', (e) => e.preventDefault());
             document.addEventListener('paste', (e) => e.preventDefault());
@@ -120,18 +172,33 @@
                 }
                 // Remove the fullscreen button after fullscreen is requested
                 fullscreenButton.style.display = 'none';
-                // Show the content after fullscreen is entered
-                document.querySelector('.dashboard').style.display = 'block';
-                // Remove the background blur after entering fullscreen
+                // Remove the background blur and overlay after entering fullscreen
                 document.getElementById('content').classList.remove('blur');
+                document.getElementById('overlay').style.display = 'none';
+                isFullscreen = true;
+                checkConditions();
             }
-            
+
             // Function to handle exiting fullscreen mode
             function handleFullscreenExit() {
                 // Show warning screen
                 document.getElementById('warningScreen').style.display = 'flex';
                 // Apply blur to the background
                 document.getElementById('content').classList.add('blur');
+                document.getElementById('overlay').style.display = 'block';
+                isFullscreen = false;
+                checkConditions();
+            }
+
+            // Function to check if both conditions are met
+            function checkConditions() {
+                if (isFullscreen && isVideoActive) {
+                    document.querySelector('.content').classList.remove('questions-blur'); // Remove blur from questions
+                    document.getElementById('interactionBlock').style.display = 'none'; // Allow interaction
+                } else {
+                    document.querySelector('.content').classList.add('questions-blur'); // Ensure questions are blurred
+                    document.getElementById('interactionBlock').style.display = 'block'; // Block interaction
+                }
             }
 
             // Listen for fullscreen change events
@@ -165,26 +232,27 @@
 
             // Apply blur to the background
             document.getElementById('content').classList.add('blur'); // Blurs the content
-        });
 
-        const toggleButton = document.getElementById('toggleButton');
-        const videoFeed = document.getElementById('videoFeed');
-        let isActive = false;
+            const toggleButton = document.getElementById('toggleButton');
+            const videoFeed = document.getElementById('videoFeed');
+            let isActive = false;
 
-        toggleButton.addEventListener('click', async () => {
-            try {
-                const response = await axios.post('/toggle_video_feed');
-                isActive = response.data.status === 'active';
-                toggleButton.textContent = isActive ? 'Stop Video Feed' : 'Start Video Feed';
-                videoFeed.style.display = isActive ? 'block' : 'none';
-                if (isActive) {
-                    videoFeed.src = '/video_feed/{{ user }}';
-                } else {
-                    videoFeed.src = '';
+            toggleButton.addEventListener('click', async () => {
+                try {
+                    const response = await axios.post('/toggle_video_feed');
+                    isVideoActive = response.data.status === 'active';
+                    toggleButton.textContent = isVideoActive ? 'Stop Video Feed' : 'Start Video Feed';
+                    videoFeed.style.display = isVideoActive ? 'block' : 'none';
+                    if (isVideoActive) {
+                        videoFeed.src = '/video_feed/{{ user }}';
+                    } else {
+                        videoFeed.src = '';
+                    }
+                    checkConditions();
+                } catch (error) {
+                    console.error('Error toggling video feed:', error);
                 }
-            } catch (error) {
-                console.error('Error toggling video feed:', error);
-            }
+            });
         });
     </script>
 </body>
