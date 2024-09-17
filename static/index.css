@@ -1,7 +1,8 @@
-#background {
-    background-image: url(/static/images/bg1.jpg);
+#firstPageBackground {
+    background-image: url(/static/images/newbg.jpg);
     background-repeat: repeat-y;
-    background-size:cover ;
+    background-size: cover;
+    filter: brightness(40%);
     padding: 20px;
     min-height: 100vh;
 }
@@ -28,7 +29,6 @@
     height: auto;
     /* border: 2px solid green; */
     padding: 20px;
-
 }
 
 #navBar {
@@ -51,7 +51,6 @@
     color: black;
     transition: background-color 0.3s ease;
     /* background-color:  rgba(210, 225, 242); */
-    
 }
 
 #navBar .aboutUs a,
@@ -66,61 +65,129 @@
     color: rgb(0, 0, 0);
     border-radius: 3px;
     border-width: 1px;
-    
 }
 
 #navBar .aboutUs a:hover,
-#navBar .howItWork a:hover
-{
+#navBar .howItWork a:hover {
     /* font-size: 20px; */
     color: rgb(198, 230, 187);
-    background-color: rgba(100, 150, 200, 0.8) ;
+    background-color: rgba(100, 150, 200, 0.8);
 }
 
-#content
-{
-    justify-content: space-between;
-    align-items: center;
+#indexContent {
     /* border: 2px solid black; */
-    background-color: rgb(0, 0, 0,0.2);
-    padding: 40px;
-    height: 500px;
+    background-color: rgb(0, 0, 0, 0.2);
     display: flex;
     flex-direction: row;
+    height: 800px;
+    /* justify-content: space-evenly; */
 }
 
-#content h1{
-    font-size: 50px;
-    font-family: 'Times New Roman', Times, serif;
+#indexContent .text
+{
+    align-items: center;
+    padding-right: 80px;
+    height: 600px;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-top: 0;
+    /* border: 2px solid red; */
+
+}
+
+#indexContent #logo img
+{
+    height: 200px;
+    width: auto;
+    padding-top: 60px;
+    background-color:rgba(255, 248, 236, 0.182) ;
+    /* border: 2px solid red; */
+    border-radius: 2000px;
+
+}
+
+#indexContent h3 {
+    /* border: 2px solid blue; */
+    font-size: 30px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    /* color: rgba(255, 255, 255, 0.844); */
+    background: linear-gradient(90deg, rgb(0, 0, 0), rgb(44, 43, 43), rgb(255, 255, 255), rgb(0, 0, 0));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-bottom: 0px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#indexContent h1 {
+    /* background-color: rgba(255, 255, 255, 0.2); */
+    font-size: 90px;
+    font-family: Georgia, "Times New Roman", Times, serif;
     margin-bottom: 10px;
+    padding: 20px;
+    color: rgb(208, 231, 255);
 }
 
-#content .text
+#indexContent .continueButton {
+    /* border: 2px solid red; */
+    text-align: center;
+    text-justify: center;
+    color: aliceblue;
+}
+
+#indexContent .continueButton a:hover {
+    /* background-color: rgb(23, 123, 6); */
+    /* background: linear-gradient(0deg, rgb(23, 123, 6), rgb(100, 200, 100)); */
+    background: linear-gradient(
+        0deg,
+        rgb(123, 72, 6),
+        rgb(150, 92, 50),
+        rgb(239, 152, 101)
+    );
+
+    color: rgb(245, 242, 193);
+}
+
+#indexContent .continueButton a {
+    border-radius: 3px;
+    background-color: rgba(165, 219, 162, 0.82);
+    height: 20px;
+    width: 78px;
+    padding: 13px;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 20px;
+    color: rgb(20, 161, 34);
+}
+
+/* #content .text
 {
     text-align: center;
-    /* border: 2px solid red; */
-}
+    /* border: 2px solid red; 
+} */
 
-#content h3 {
+/* #content h3 {
     font-size: 30px;
-}
+} */
 
-#continueButton a button {
-    padding: 10px 20px; /* Added padding to the button for better size */
-    font-size: 18px; /* Increased font size for readability */
-    background-color: rgb(70, 130, 180); /* Changed button background color */
+/* #continueButton a button {
+    padding: 10px 20px; 
+    font-size: 18px; 
+    background-color: rgb(70, 130, 180); 
     color: white;
     border: none;
-    border-radius: 5px; /* Rounded the button corners */
+    border-radius: 5px; 
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Added smooth transition on hover */
+    transition: background-color 0.3s ease; 
 }
 #continueButton a button:hover {
-    background-color: rgb(50, 100, 150); /* Darkened the button color on hover */
+    background-color: rgb(50, 100, 150); 
 }
 #content .sideImage img
 {
-    /* justify-content: inherit; */
+    justify-content: inherit;
     max-width: 400px;
     flex: 1;
     height: 50%;
@@ -128,14 +195,14 @@
 }
 
 body, h1, h3, a, button {
-    margin: 0; /* Removed default margins */
-    padding: 0; /* Removed default padding */
-    box-sizing: border-box; /* Ensures padding and border don't affect the size */
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
 }
 
-/* Body settings */
+
 body {
     font-family: Arial, sans-serif;
-    background-color: #f0f0f0; /* Light background color for the body */
-    margin: 0; /* Removed default body margin */
-}
+    background-color: #f0f0f0; 
+    margin: 0; 
+} */
