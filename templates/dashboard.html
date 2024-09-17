@@ -72,13 +72,30 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3); /* Subtle shadow */
         }
         
-        /* Style for redirect link */
+        /* Style for redirect button */
         .redirect-link {
+            display: inline-block; /* Make it behave like a button */
             margin-top: 20px;
+            padding: 10px 20px; /* Add some padding for better touch interaction */
             font-size: 18px;
-            color: #fff; 
-            text-decoration: underline;
-            cursor: pointer;
+            color: #fff;
+            background-color: #009688; /* Match the stylish green color used elsewhere */
+            border: none; /* Remove default button borders */
+            border-radius: 8px; /* Smooth, rounded corners */
+            text-decoration: none; /* Remove underline from link-style text */
+            cursor: pointer; /* Change cursor to pointer on hover */
+            transition: background-color 0.3s ease, transform 0.2s ease; /* Add smooth hover transitions */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
+        }
+
+        .redirect-link:hover {
+            background-color: #00796b; /* Darken the green on hover */
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+
+        .redirect-link:active {
+            background-color: #004d40; /* Darker green on active press */
+            transform: translateY(0); /* Remove lift effect */
         }
 
         /* Blur effect for questions */
@@ -108,16 +125,13 @@
             <div class="interaction-block" id="interactionBlock"></div>
             <div class="question-list">
                 <h2>General Knowledge Questions</h2>
-                <ul>
-                    <li>
-                        <p>What is the capital of Nepal?</p>                        
-                        <input type="text" name="question1" placeholder="Your answer">
-                    </li>
-                    <li>Who painted the Mona Lisa?</li>
-                    <li>What is the largest planet in our solar system?</li>
-                    <li>What is the chemical symbol for gold?</li>
-                    <li>Who wrote "To Kill a Mockingbird" novel?</li>
-                </ul>
+                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSc8xCbgchE2A97_tPbQS6UgT-_V_7dy9NpE8gcG-rAEj-qnkg/viewform?embedded=true" 
+                width="640" 
+                height="1390" 
+                frameborder="0" 
+                marginheight="0" 
+                marginwidth="0">
+                </iframe>
             </div>
         </div>
         <div class="video-container">
@@ -132,7 +146,7 @@
     <!-- Warning Screen -->
     <div id="warningScreen" class="warning-screen">
         <div class="warning-sign">WARNING</div>
-        <a href="login" class="redirect-link">Go to Login</a>
+        <button class="redirect-link" onclick="window.location.href='login'">Go to Login</button>
     </div>
 
     <script>
