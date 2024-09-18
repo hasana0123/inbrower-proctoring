@@ -14,9 +14,12 @@ import base64
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt 
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 import httpx
-
+import time 
+from pydantic import BaseModel
+from datetime import datetime
+import json
 
 app = FastAPI()
 
@@ -352,16 +355,24 @@ async def video_feed(username: str):
     return RedirectResponse(url="/")
 
 @app.post("/alt-tab")
-async def alt_tab_detected(request: Request):
-    try:
-        data = await request.json()
-        if data.get("alt_tab_detected"):
-            # Log the Alt+Tab detection
-            print("Alt+Tab detected!")
-        return {"status": "success"}
-    except Exception as e:
-        # Return a 500 status code if an error occurs
-        raise HTTPException(status_code=500, detail=str(e))
+async def handle_alt_tab(request: Request):
+    data = await request.json()
+    type = data.get('type')
+    start_time = data.get('start_time')
+    end_time = data.get('end_time')
+    time_elapsed = data.get('time_elapsed')
+
+    # Convert timestamps to readable format
+    start_time = datetime.fromtimestamp(start_time / 1000) if start_time else None
+    end_time = datetime.fromtimestamp(end_time / 1000) if end_time else None
+
+    # Log the received data
+    print(f"Type: {type}")
+    print(f"Start Time: {start_time}")
+    print(f"End Time: {end_time}")
+    print(f"Time Elapsed: {time_elapsed}")
+
+    return {"message": "Data received"}
 
 @app.post("/toggle_video_feed")
 async def toggle_video_feed():
