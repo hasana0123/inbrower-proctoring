@@ -14,6 +14,9 @@ import base64
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt 
+from fastapi import FastAPI, Request
+import httpx
+
 
 app = FastAPI()
 
@@ -264,6 +267,15 @@ def generate_cheating_graph(username):
     
     return image_base64
 
+# @app.post("/alt-tab")
+# async def alt_tab_alert(request: Request):
+#     data = await request.json()
+#     if data.get("alt_tab") == "true":
+#         async with httpx.AsyncClient() as client:
+#             response = await client.post("http://localhost:8000/alt-tab", json={"alt_tab": "true"})
+#             return {"message": "Alt+Tab detected and reported"}
+#     return {"message": "No Alt+Tab detected"}
+
 @app.get("/", response_class=HTMLResponse)
 async def index_page(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
@@ -278,9 +290,9 @@ async def get_about_us(request: Request):
 async def get_how_it_works(request: Request):
     return templates.TemplateResponse("howItWorks.html", {"request": request})
 
-@app.get("/login", response_class=HTMLResponse)
-async def login_page(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request})
+# @app.get("/login", response_class=HTMLResponse)
+# async def login_page(request: Request):
+#     return templates.TemplateResponse("login.html", {"request": request})
 
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
@@ -338,6 +350,18 @@ async def video_feed(username: str):
     if current_user and video_feed_active:
         return StreamingResponse(generate_video_feed(username), media_type="multipart/x-mixed-replace; boundary=frame")
     return RedirectResponse(url="/")
+
+@app.post("/alt-tab")
+async def alt_tab_detected(request: Request):
+    try:
+        data = await request.json()
+        if data.get("alt_tab_detected"):
+            # Log the Alt+Tab detection
+            print("Alt+Tab detected!")
+        return {"status": "success"}
+    except Exception as e:
+        # Return a 500 status code if an error occurs
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.post("/toggle_video_feed")
 async def toggle_video_feed():
