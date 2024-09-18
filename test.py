@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 import mediapipe as mp
-from fastapi import FastAPI, Form, Request, WebSocket
+from fastapi import FastAPI, Form, Request, WebSocket, HTTPException
 from fastapi.responses import StreamingResponse, HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -14,8 +14,14 @@ import base64
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt 
+import httpx
+import time 
+from pydantic import BaseModel
+from datetime import datetime
+import json
 from ultralytics import YOLO 
 from PIL import Image
+
 
 app = FastAPI()
 
@@ -333,6 +339,15 @@ def generate_cheating_graph(username):
     
     return image_base64
 
+# @app.post("/alt-tab")
+# async def alt_tab_alert(request: Request):
+#     data = await request.json()
+#     if data.get("alt_tab") == "true":
+#         async with httpx.AsyncClient() as client:
+#             response = await client.post("http://localhost:8000/alt-tab", json={"alt_tab": "true"})
+#             return {"message": "Alt+Tab detected and reported"}
+#     return {"message": "No Alt+Tab detected"}
+
 @app.get("/", response_class=HTMLResponse)
 async def index_page(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
@@ -347,10 +362,13 @@ async def get_about_us(request: Request):
 async def get_how_it_works(request: Request):
     return templates.TemplateResponse("howItWorks.html", {"request": request})
 
+# @app.get("/login", response_class=HTMLResponse)
+# async def login_page(request: Request):
+#     return templates.TemplateResponse("login.html", {"request": request})
+
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
-
 
 @app.post("/login")
 async def login(username: str = Form(...), password: str = Form(...)):
@@ -404,6 +422,26 @@ async def video_feed(username: str):
     if current_user and video_feed_active:
         return StreamingResponse(generate_video_feed(username), media_type="multipart/x-mixed-replace; boundary=frame")
     return RedirectResponse(url="/")
+
+@app.post("/alt-tab")
+async def handle_alt_tab(request: Request):
+    data = await request.json()
+    type = data.get('type')
+    start_time = data.get('start_time')
+    end_time = data.get('end_time')
+    time_elapsed = data.get('time_elapsed')
+
+    # Convert timestamps to readable format
+    start_time = datetime.fromtimestamp(start_time / 1000) if start_time else None
+    end_time = datetime.fromtimestamp(end_time / 1000) if end_time else None
+
+    # Log the received data
+    print(f"Type: {type}")
+    print(f"Start Time: {start_time}")
+    print(f"End Time: {end_time}")
+    print(f"Time Elapsed: {time_elapsed}")
+
+    return {"message": "Data received"}
 
 @app.post("/toggle_video_feed")
 async def toggle_video_feed():
