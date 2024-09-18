@@ -15,6 +15,7 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt 
 from ultralytics import YOLO 
+from PIL import Image
 
 app = FastAPI()
 
@@ -165,6 +166,18 @@ def stop_audio_detection():
     audio_detection_active = False
     print("Audio detection stopped.")
 
+anti_spoofing_model = YOLO('best.pt')
+
+def predict_anti_spoofing(image):
+    results = anti_spoofing_model(image, verbose=False)
+    for result in results:
+        probs = result.probs
+        if probs.top1 == 1:
+            return f"{anti_spoofing_model.names[probs.top1]}", probs.top1conf.item()
+        elif probs.top1 == 0:
+            return f"{anti_spoofing_model.names[probs.top1]}", probs.top1conf.item()
+    return "Unknown", 0.0
+
 def generate_video_feed(username):
     global eye_cheating, head_cheating, video_feed_active, multiple_persons_detected, book_detected, phone_detected
     cap = cv.VideoCapture(0)
@@ -178,6 +191,16 @@ def generate_video_feed(username):
             img_h, img_w = frame.shape[:2]
 
             detect_objects(frame)
+
+            pil_image = Image.fromarray(frame_rgb)
+            anti_spoofing_label, confidence = predict_anti_spoofing(pil_image)
+            
+            # Determine color based on the prediction
+            color = (0, 255, 0) if anti_spoofing_label == "real" else (0, 0, 255)
+            
+            # Display anti-spoofing result on the frame
+            cv.putText(frame, f"Anti-Spoofing: {anti_spoofing_label} ({confidence:.2f})", 
+                       (20, 280), cv.FONT_HERSHEY_SIMPLEX, 0.6, color, 2)
 
             if sound_detected:
                 cv.circle(frame, (600, 50), 20, (0, 0, 255), -1)  # Red dot
@@ -253,7 +276,8 @@ def generate_video_feed(username):
                     sound_detected, 
                     multiple_persons_detected, 
                     book_detected, 
-                    phone_detected
+                    phone_detected,
+                    anti_spoofing_label != "real"
                 ])
                 is_cheating = cheating_votes >= 2
 
