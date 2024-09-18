@@ -74,36 +74,44 @@
     background-color: rgba(100, 150, 200, 0.8);
 }
 
+/* Styles for Index page */
+
 #indexContent {
     /* border: 2px solid black; */
     background-color: rgba(88, 77, 77, 0.2);
     display: flex;
-    flex-direction: row;
-    height: 800px;
-    /* justify-content: space-evenly; */
+    flex-direction: column;
+    height: 1000px;
+    justify-content: center;
+    position: relative;
+    align-items: center;
 }
 
 #indexContent .text
 {
-    align-items: center;
-    padding-right: 80px;
-    height: 600px;
+   text-align: center;
+   max-width: 1000px; 
+}
+#indexContent .all
+{
+    /* border: 2px solid green; */
+    padding: 30px;
     display: flex;
-    justify-content: center;
     flex-direction: column;
-    margin-top: 0;
-    /* border: 2px solid red; */
-
+    align-items: center;
+}
+#indexContent #logo
+{
+    position: absolute;
+    top: 40px;
+    left: 40px;
 }
 
 #indexContent #logo img
 {
     height: 200px;
     width: auto;
-    /* padding: 60px; */
-
     background-color:rgba(255, 254, 253, 0.182) ;
-    /* border: 2px solid red; */
     border-radius: 2000px;
 
 }
@@ -112,8 +120,7 @@
     /* border: 2px solid blue; */
     font-size: 30px;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    /* color: rgba(255, 255, 255, 0.844); */
-    background: linear-gradient(90deg, rgb(0, 0, 0), rgb(44, 43, 43), rgb(255, 255, 255), rgb(0, 0, 0));
+    background: linear-gradient(90deg, rgb(0, 0, 0), rgb(0, 0, 0), rgb(255, 255, 255), rgb(0, 0, 0));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -123,13 +130,11 @@
 }
 
 #indexContent h1 {
-    /* background-color: rgba(255, 255, 255, 0.2); */
     font-size: 90px;
     font-family: Georgia, "Times New Roman", Times, serif;
     margin-bottom: 10px;
     padding: 20px;
-    /* color: rgb(208, 231, 255); */
-    background: linear-gradient(90deg, rgb(31, 32, 33), rgb(133, 132, 132), rgb(255, 255, 255), rgb(129, 179, 249));
+    background: linear-gradient(90deg, rgb(9, 9, 9), rgb(0, 0, 0), rgb(255, 255, 255), rgb(117, 164, 217), rgb(129, 179, 249));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
@@ -139,7 +144,8 @@
     /* border: 2px solid red; */
     text-align: center;
     text-justify: center;
-    color: aliceblue;
+    color: rgb(4, 133, 37);
+    padding-top:90px ;
 }
 
 #indexContent .continueButton a:hover {
