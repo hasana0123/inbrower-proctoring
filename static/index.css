@@ -13,7 +13,9 @@
     flex-direction: row;
     justify-content: center;
     align-items: center;
-     /* position: relative; */
+     position: static;
+     top: 0;
+     left: 0;
     /*z-index: 100;
     top: 0; */
     /* margin: 0; */
@@ -25,21 +27,27 @@
 
 #logo img {
     /* border: 2px solid green; */
-    width: 10%;
+    width: 50%;
     height: auto;
     padding: 20px;
-    position: absolute;
+    /* position: absolute;
     top: 10px;
-    left: 250px
+    left: 250px */
+}
+
+#logo img:hover
+{
+    background-color: rgba(252, 246, 246, 0.267);
 }
 
 #navBar {
     display: flex;
     flex-direction: row;
     gap: 20px;
-    position: absolute;
-    right: 200px;
+    /* position: absolute; */
+    /* right: 200px; */
     /* border: 2px solid red; */
+    padding-left: 600px;
 }
 
 #navBar .aboutUs,
@@ -79,6 +87,23 @@
     );
 }
 
+#aboutUsContent, #howItWorkcontent
+{
+    text-align: center;
+    /* height: 500px; */
+    padding: 100px;
+    justify-content: center;
+    /* border: 2px solid red; */
+    font-size: 30px;
+}
+#aboutUsContent h1,h3, #howItWorkcontent h1,h3
+{
+    /* max-width: 300; */
+    color: white;
+
+}
+
+
 /* Styles for Index page */
 
 #indexContent {
@@ -110,14 +135,6 @@
 }
 
 
-#indexContent #logo img
-{
-    height: 200px;
-    width: auto;
-    background-color:rgba(255, 254, 253, 0.182) ;
-    border-radius: 2000px;
-
-}
 
 #indexContent h3 {
     /* border: 2px solid blue; */
@@ -234,7 +251,10 @@ body {
     background-color: rgba(236, 175, 175, 0.376);
     text-align: center;
     justify-content: center;
-    position: relative;
+    position: absolute;
+    z-index: 2;
+    bottom: 0;
+    left: 0;
     
 }
 #footer p
