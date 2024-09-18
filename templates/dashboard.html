@@ -196,6 +196,15 @@
                 }
             }
 
+            // Disable copy-paste and text selection
+            function disableCopyPaste() {
+                document.addEventListener('copy', (e) => e.preventDefault());
+                document.addEventListener('paste', (e) => e.preventDefault());
+                document.addEventListener('cut', (e) => e.preventDefault());
+            }
+
+    disableCopyPaste(); // Call the function to apply the restrictions
+
             // Listen for fullscreen change events
             document.addEventListener('fullscreenchange', () => {
                 if (!document.fullscreenElement) {
