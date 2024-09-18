@@ -127,7 +127,7 @@
                 <h2>General Knowledge Questions</h2>
                 <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSc8xCbgchE2A97_tPbQS6UgT-_V_7dy9NpE8gcG-rAEj-qnkg/viewform?embedded=true" 
                 width="640" 
-                height="1390" 
+                height="1263" 
                 frameborder="0" 
                 marginheight="0" 
                 marginwidth="0">
@@ -257,22 +257,57 @@
                     console.error('Error toggling video feed:', error);
                 }
             });
-            // Function to handle Alt+Tab detection
-            function detectAltTab() {
-                document.addEventListener('visibilitychange', () => {
-                    if (document.hidden && isFullscreen) {
-                        axios.post('http://127.0.0.1:8000/alt-tab', {
-                            message: 'Alt+Tab detected'
-                        }).then(response => {
-                            console.log('Alt+Tab reported:', response.data);
-                        }).catch(error => {
-                            console.error('Error reporting Alt+Tab:', error);
-                        });
-                    }
-                });
-            }
+            
+            let fullscreenActive = false;
+            let startTime = null;
+            let endTime = null;
 
-            detectAltTab(); // Call the function to set up the event listener
+            // Handle fullscreen and visibility changes
+        document.addEventListener('fullscreenchange', () => {
+            fullscreenActive = document.fullscreenElement !== null;
+            if (fullscreenActive) {
+                startTime = Date.now();
+            } else if (startTime) {
+                endTime = Date.now();
+                sendTimeData('fullscreen');
+            }
+        });
+
+        document.addEventListener('visibilitychange', () => {
+            if (fullscreenActive && document.hidden) {
+                startTime = Date.now();
+            } else if (fullscreenActive && !document.hidden && startTime) {
+                endTime = Date.now();
+                sendTimeData('alt-tab');
+            }
+        });
+
+        // Send time data to the server
+        function sendTimeData(type) {
+            if (startTime && endTime) {
+                const timeElapsed = endTime - startTime;
+                const formattedTime = formatTime(timeElapsed);
+                fetch('/alt-tab', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({
+                        type: type,
+                        start_time: startTime,
+                        end_time: endTime,
+                        time_elapsed: formattedTime
+                    })
+                });
+                startTime = endTime = null; // Reset times
+            }
+        }
+
+        // Format time in seconds and milliseconds
+        function formatTime(milliseconds) {
+            const seconds = Math.floor(milliseconds / 1000);
+            const ms = milliseconds % 1000;
+            return `${seconds}.${Math.floor(ms / 10)} s`; // Display in seconds and tenths of seconds
+        }
+            
         });
     </script>
 </body>
