@@ -14,6 +14,7 @@ import base64
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt 
+from ultralytics import YOLO 
 
 app = FastAPI()
 
@@ -53,6 +54,34 @@ video_cap = None
 test_duration = 30  # 5 minutes in seconds
 start_time = None
 cheating_data = []
+
+yolo_model = YOLO('yolov8m.pt')
+class_names = ['person', 'book', 'cell phone']
+class_indices = [i for i, name in yolo_model.names.items() if name in class_names]
+
+multiple_persons_detected = False
+book_detected = False
+phone_detected = False
+
+def detect_objects(frame):
+    global multiple_persons_detected, book_detected, phone_detected
+    
+    results = yolo_model(frame, classes=class_indices)
+    
+    person_count = 0
+    for result in results:
+        boxes = result.boxes
+        for box in boxes:
+            cls = int(box.cls[0])
+            class_name = result.names[cls]
+            if class_name == 'person':
+                person_count += 1
+            elif class_name == 'book':
+                book_detected = True
+            elif class_name == 'cell phone':
+                phone_detected = True
+    
+    multiple_persons_detected = person_count > 1
 
 def eucidiean_distance(point1, point2):
     x1, y1 = point1.ravel()
@@ -137,7 +166,7 @@ def stop_audio_detection():
     print("Audio detection stopped.")
 
 def generate_video_feed(username):
-    global eye_cheating, head_cheating, video_feed_active
+    global eye_cheating, head_cheating, video_feed_active, multiple_persons_detected, book_detected, phone_detected
     cap = cv.VideoCapture(0)
     with mp_face_mesh.FaceMesh(max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5, min_tracking_confidence=0.5) as face_mesh:
         while video_feed_active:
@@ -147,6 +176,8 @@ def generate_video_feed(username):
             frame = cv.flip(frame, 1)
             frame_rgb = cv.cvtColor(frame, cv.COLOR_BGR2RGB)
             img_h, img_w = frame.shape[:2]
+
+            detect_objects(frame)
 
             if sound_detected:
                 cv.circle(frame, (600, 50), 20, (0, 0, 255), -1)  # Red dot
@@ -216,7 +247,14 @@ def generate_video_feed(username):
                 # cv.line(frame, p1, p2, (255, 0, 0), 3)
                 # cv.putText(frame, text, (20, 100), cv.FONT_HERSHEY_SIMPLEX, 2, (0, 255, 0), 2)
 
-                cheating_votes = sum([eye_cheating, head_cheating, sound_detected])
+                cheating_votes = sum([
+                    eye_cheating, 
+                    head_cheating, 
+                    sound_detected, 
+                    multiple_persons_detected, 
+                    book_detected, 
+                    phone_detected
+                ])
                 is_cheating = cheating_votes >= 2
 
                 elapsed_time = time.time() - start_time
@@ -231,13 +269,20 @@ def generate_video_feed(username):
                 cv.putText(frame, f"Eye: {'Cheating' if eye_cheating else 'OK'}", (20, 100), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
                 cv.putText(frame, f"Head: {'Cheating' if head_cheating else 'OK'}", (20, 130), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
                 cv.putText(frame, f"Sound: {'Detected' if sound_detected else 'Not Detected'}", (20, 160), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
-
+                cv.putText(frame, f"Multiple Persons: {'Detected' if multiple_persons_detected else 'Not Detected'}", (20, 190), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+                cv.putText(frame, f"Book: {'Detected' if book_detected else 'Not Detected'}", (20, 220), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+                cv.putText(frame, f"Phone: {'Detected' if phone_detected else 'Not Detected'}", (20, 250), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
 
             _, buffer = cv.imencode('.jpg', frame)
             frame = buffer.tobytes()
 
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            
+            multiple_persons_detected = False
+            book_detected = False
+            phone_detected = False
+
 
     cap.release()
 
