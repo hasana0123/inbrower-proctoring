@@ -14,7 +14,7 @@
         input, textarea, select {
             user-select: none; /* Prevent text selection inside inputs */
         }
-
+        
         /* Style for the fullscreen button */
         .fullscreen-button {
             position: fixed;
@@ -152,7 +152,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             let isFullscreen = false;
-            let isVideoActive = false;
+            // let isVideoActive = false;
 
             // Function to request fullscreen mode
             function enterFullscreen() {
@@ -203,7 +203,7 @@
                 document.addEventListener('cut', (e) => e.preventDefault());
             }
 
-    disableCopyPaste(); // Call the function to apply the restrictions
+            disableCopyPaste(); // Call the function to apply the restrictions
 
             // Listen for fullscreen change events
             document.addEventListener('fullscreenchange', () => {
@@ -226,7 +226,7 @@
                     handleFullscreenExit();
                 }
             });
-
+            
             // Create a fullscreen button
             const fullscreenButton = document.createElement('button');
             fullscreenButton.innerText = 'Enter Fullscreen';
@@ -239,6 +239,7 @@
 
             const toggleButton = document.getElementById('toggleButton');
             const videoFeed = document.getElementById('videoFeed');
+            let isActive = false;
 
             toggleButton.addEventListener('click', async () => {
                 try {
@@ -247,7 +248,7 @@
                     toggleButton.textContent = isVideoActive ? 'Stop Video Feed' : 'Start Video Feed';
                     videoFeed.style.display = isVideoActive ? 'block' : 'none';
                     if (isVideoActive) {
-                        videoFeed.src = '/video_feed';
+                        videoFeed.src = '/video_feed/{{ user }}';
                     } else {
                         videoFeed.src = '';
                     }
@@ -256,6 +257,22 @@
                     console.error('Error toggling video feed:', error);
                 }
             });
+            // Function to handle Alt+Tab detection
+            function detectAltTab() {
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden && isFullscreen) {
+                        axios.post('http://127.0.0.1:8000/alt-tab', {
+                            message: 'Alt+Tab detected'
+                        }).then(response => {
+                            console.log('Alt+Tab reported:', response.data);
+                        }).catch(error => {
+                            console.error('Error reporting Alt+Tab:', error);
+                        });
+                    }
+                });
+            }
+
+            detectAltTab(); // Call the function to set up the event listener
         });
     </script>
 </body>
