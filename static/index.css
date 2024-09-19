@@ -1,141 +1,263 @@
-#background {
-    background-image: url(/static/images/bg1.jpg);
-    background-repeat: repeat-y;
-    background-size:cover ;
+#firstPageBackground {
+    background-image: url(/static/images/newbg.jpg);
+    background-size: cover;
+    background-position: center;
+    filter: brightness(60%);
+    /* filter: ; */
     padding: 20px;
-    min-height: 100vh;
+    min-height: 90vh;
 }
 
 #header {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    /* border: 2px solid red; */
-    position: sticky;
-    background-color: rgba(255, 255, 255, 0.2);
-    position: sticky;
-    z-index: 100;
+    position: static;
     top: 0;
-    /* background-color: rgb(213, 234, 242); */
-    /* margin: 0; */
-    padding: 20px;
-    height: 200px;
+    left: 0;
+    z-index: 100;
+    padding: 10px;
+    height: 210px;
+    /* background-color: rgba(241, 200, 174, 0.27); */
+    /* border: 2px solid red; */
 }
 
 #logo img {
     width: 45%;
     height: auto;
-    /* border: 2px solid green; */
     padding: 20px;
+    /* border: 2px solid red; */
+    border-radius: 1000px;
+}
 
+#logo img:hover {
+    background-color: rgba(175, 115, 102, 0.267);
 }
 
 #navBar {
     display: flex;
     flex-direction: row;
     gap: 20px;
+    /* position: absolute; */
+    /* right: 200px; */
     /* border: 2px solid red; */
+    padding-left: 600px;
 }
 
 #navBar .aboutUs,
-#navBar .howItWork {
+#navBar .howItWork,
+#navBar .home {
     text-align: center;
     justify-content: center;
     display: flex;
     /* border: 2px solid green; */
-    padding: 20px;
-    font-size: 16px;
-    text-decoration: none;
-    padding: 10px 20px;
     color: black;
     transition: background-color 0.3s ease;
-    /* background-color:  rgba(210, 225, 242); */
-    
 }
 
 #navBar .aboutUs a,
-#navBar .howItWork a {
+#navBar .howItWork a,
+#navBar .home a {
     margin: 0;
-    font-size: 16px;
+    /* height: 15px; */
+    font-size: 20px;
     display: inline-block;
     text-decoration: none;
-    border: 2px solid rgb(179, 213, 251);
-    background-color: rgba(210, 225, 242, 0.3);
-    padding: 15px;
+    border: 2px solid rgb(255, 255, 255);
+    border-left: 0;
+    border-right: 0;
+    background-color: rgba(160, 202, 249, 0.3);
+    padding: 10px;
     color: rgb(0, 0, 0);
     border-radius: 3px;
     border-width: 1px;
-    
 }
 
 #navBar .aboutUs a:hover,
-#navBar .howItWork a:hover
-{
-    /* font-size: 20px; */
-    color: rgb(198, 230, 187);
-    background-color: rgba(100, 150, 200, 0.8) ;
+#navBar .howItWork a:hover,
+#navBar .home a:hover {
+    color: rgb(255, 255, 255);
+    background: linear-gradient(
+        180deg,
+        rgba(215, 142, 128, 0.69),
+        rgb(235, 161, 118)
+    );
 }
 
-#content
-{
-    justify-content: space-between;
-    align-items: center;
-    /* border: 2px solid black; */
-    background-color: rgb(0, 0, 0,0.2);
-    padding: 40px;
-    height: 500px;
-    display: flex;
-    flex-direction: row;
-}
-
-#content h1{
-    font-size: 50px;
-    font-family: 'Times New Roman', Times, serif;
-    margin-bottom: 10px;
-}
-
-#content .text
-{
+#aboutUsContent,
+#howItWorkcontent {
     text-align: center;
+    /* height: 500px; */
+    padding: 100px;
+    justify-content: center;
     /* border: 2px solid red; */
-}
-
-#content h3 {
     font-size: 30px;
 }
+#aboutUsContent h1,
+h3,
+#howItWorkcontent h1,
+h3 {
+    /* max-width: 300; */
+    color: white;
+}
 
-#continueButton a button {
-    padding: 10px 20px; /* Added padding to the button for better size */
-    font-size: 18px; /* Increased font size for readability */
-    background-color: rgb(70, 130, 180); /* Changed button background color */
+/* Styles for Index page */
+
+#indexContent {
+    /* border: 2px solid black; */
+    /* background-color: rgba(222, 222, 222, 0.2); */
+    display: flex;
+    flex-direction: column;
+    height: 1000px;
+    justify-content: first baseline;
+    position: relative;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+#indexContent .text {
+    text-align: center;
+    max-width: 1000px;
+}
+#indexContent .all {
+    /* border: 2px solid green; */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 0;
+    padding-top: 0;
+}
+
+#indexContent h3 {
+    /* border: 2px solid blue; */
+    font-size: 35px;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    background: linear-gradient(
+        90deg,
+        rgb(0, 0, 0),
+        rgb(0, 0, 0),
+        rgb(143, 69, 69),
+        rgb(247, 243, 243),
+        rgb(255, 255, 255)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    padding-bottom: 0px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+#indexContent h1 {
+    font-size: 110px;
+    font-family: Georgia, "Times New Roman", Times, serif;
+    margin-bottom: 10px;
+    padding: 20px;
+    background: linear-gradient(
+        90deg,
+        rgb(9, 9, 9),
+        rgb(0, 0, 0),
+        rgb(255, 255, 255),
+        rgb(255, 255, 255),
+        rgb(255, 251, 251)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+}
+
+#indexContent .continueButton {
+    /* border: 2px solid red; */
+    text-align: center;
+    text-justify: center;
+    font-size: 30px;
+    font-weight: bold;
+    color: rgb(143, 83, 60);
+    padding-top: 50px;
+}
+
+#indexContent .continueButton a:hover {
+    /* background-color: rgb(23, 123, 6); */
+    /* background: linear-gradient(0deg, rgb(23, 123, 6), rgb(100, 200, 100)); */
+    background: linear-gradient(
+        0deg,
+        rgb(123, 72, 6),
+        rgb(150, 92, 50),
+        rgb(239, 152, 101)
+    );
+
+    color: rgb(245, 242, 193);
+}
+
+#indexContent .continueButton a {
+    background-color: rgba(218, 204, 191, 0.435);
+    border: 1px solid white;
+    border-left: none;
+    border-right: none;
+    /* height: 30px;
+    width: 80px; */
+    padding: 20px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 30px;
+    color: rgb(138, 40, 40);
+}
+
+/* #content .text
+{
+    text-align: center;
+    /* border: 2px solid red; 
+} */
+
+/* #content h3 {
+    font-size: 30px;
+} */
+
+/* #continueButton a button {
+    padding: 10px 20px; 
+    font-size: 18px; 
+    background-color: rgb(70, 130, 180); 
     color: white;
     border: none;
-    border-radius: 5px; /* Rounded the button corners */
+    border-radius: 5px; 
     cursor: pointer;
-    transition: background-color 0.3s ease; /* Added smooth transition on hover */
+    transition: background-color 0.3s ease; 
 }
 #continueButton a button:hover {
-    background-color: rgb(50, 100, 150); /* Darkened the button color on hover */
+    background-color: rgb(50, 100, 150); 
 }
 #content .sideImage img
 {
-    /* justify-content: inherit; */
+    justify-content: inherit;
     max-width: 400px;
     flex: 1;
     height: 50%;
     width: auto;
-}
+}*/
 
-body, h1, h3, a, button {
-    margin: 0; /* Removed default margins */
-    padding: 0; /* Removed default padding */
-    box-sizing: border-box; /* Ensures padding and border don't affect the size */
-}
-
-/* Body settings */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f0f0; /* Light background color for the body */
-    margin: 0; /* Removed default body margin */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+#footer {
+    height: 150px;
+    padding: 20px;
+    /* border: 2px solid red; */
+    background-color: rgba(236, 175, 175, 0.376);
+    text-align: center;
+    justify-content: center;
+    position: absolute;
+    z-index: 2;
+    bottom: 0;
+    left: 0;
+}
+#footer p {
+    font-size: 20px;
+    text-align: center;
+    z-index: 3;
 }

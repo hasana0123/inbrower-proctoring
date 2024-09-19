@@ -1,35 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login</title>
-  <link rel="stylesheet" href="/static/styles.css">
-</head>
-<body>
-  <div id="header">
-    <div id="Logo">
-        <a href="/">
-            <img src="/static/images/InvigilAI.png" alt="InvigilAI" />
-        </a>
-    </div>
-    <div id="navBar">
-        <a href="/aboutUs"> About us</a>
-        <a href="/howItWorks"> How does it Work?</a>
-    </div>
-</div>
-  <div class="login-container">
-    <h2 class="login-title">Login</h2>
-    <form method="POST" action="/login">
-      <div class="input-field">
-        <input type="text" name="username" placeholder="Username" required>
-      </div>
-      <div class="input-field">
-        <input type="password" name="password" placeholder="Password" required>
-      </div>
-      <button type="submit">Login</button>
-    </form>
-    <p class="message">Forgot Password?</p>
-  </div>
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Login</title>
+        <link rel="stylesheet" href="/static/styles.css" />
+        <link rel="stylesheet" href="/static/index.css" />
+    </head>
+    <body>
+        <div id="loginBg">
+            <div class="overlay"></div>
+            <div id="header">
+                <div id="logo">
+                    <a href="index.html">
+                        <img
+                            src="/static/images/InvigilAI.png"
+                            alt="InvigilAI"
+                        />
+                    </a>
+                </div>
+                <div id="navBar">
+                    <div class="home">
+                        <a href="index.html">Home</a>
+                    </div>
+                    <div class="aboutUs">
+                        <a href="aboutUs.html"> About us</a>
+                    </div>
+                    <div class="howItWork">
+                        <a href="howItWorks.html"> How does it Work?</a>
+                    </div>
+                </div>
+            </div>
+            <div id="loginContent">
+                <div id="allContent">
+                    <div class="welcomeMessage">
+                        <img src="../static/images/welcomemsg.jpg" alt="" />
+                        <h2 class="welcomeText">Welcome back</h2>
+                    </div>
+                    <div class="login-container">
+                        <h2 class="login-title">LOGIN</h2>
+                        <form method="POST" action="/login">
+                            <div class="input-field">
+                                <input
+                                    type="text"
+                                    name="username"
+                                    placeholder="Username"
+                                    required
+                                />
+                            </div>
+                            <div class="input-field">
+                                <input
+                                    type="password"
+                                    name="password"
+                                    placeholder="Password"
+                                    required
+                                />
+                            </div>
+                            <button type="submit">Login</button>
+                        </form>
+                        <p class="message">Forgot Password?</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="footer">
+            <h1>Contact us at</h1>
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Voluptatum fugit optio consequatur, unde accusantium ad corrupti
+                fugiat sint sunt dolore provident debitis laborum? Quae
+                recusandae ratione tempore, reiciendis adipisci corporis.
+            </p>
+        </div>
+    </body>
 </html>
