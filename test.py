@@ -58,7 +58,7 @@ sound_detected = False
 video_feed_active = False
 video_cap = None
 
-test_duration = 30  # 5 minutes in seconds
+total_time = 30  # 5 minutes in seconds
 start_time = None
 cheating_data = []
 
@@ -178,14 +178,14 @@ def predict_anti_spoofing(image):
     results = anti_spoofing_model(image, verbose=False)
     for result in results:
         probs = result.probs
-        if probs.top1 == 1:
+        if probs.top1 > 0.7:
             return f"{anti_spoofing_model.names[probs.top1]}", probs.top1conf.item()
         elif probs.top1 == 0:
             return f"{anti_spoofing_model.names[probs.top1]}", probs.top1conf.item()
     return "Unknown", 0.0
 
 def generate_video_feed(username):
-    global eye_cheating, head_cheating, video_feed_active, multiple_persons_detected, book_detected, phone_detected
+    global eye_cheating, head_cheating, video_feed_active, multiple_persons_detected, book_detected, phone_detected, start_time
     cap = cv.VideoCapture(0)
     with mp_face_mesh.FaceMesh(max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5, min_tracking_confidence=0.5) as face_mesh:
         while video_feed_active:
@@ -302,6 +302,9 @@ def generate_video_feed(username):
                 cv.putText(frame, f"Multiple Persons: {'Detected' if multiple_persons_detected else 'Not Detected'}", (20, 190), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
                 cv.putText(frame, f"Book: {'Detected' if book_detected else 'Not Detected'}", (20, 220), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
                 cv.putText(frame, f"Phone: {'Detected' if phone_detected else 'Not Detected'}", (20, 250), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+                
+                time_remaining = max(0, total_time - elapsed_time)
+                cv.putText(frame, f"Time remaining: {int(time_remaining)}s", (20, 310), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
 
             _, buffer = cv.imencode('.jpg', frame)
             frame = buffer.tobytes()
@@ -422,6 +425,16 @@ async def video_feed(username: str):
     if current_user and video_feed_active:
         return StreamingResponse(generate_video_feed(username), media_type="multipart/x-mixed-replace; boundary=frame")
     return RedirectResponse(url="/")
+
+# Add a new endpoint to check the video feed status
+@app.get("/video_feed_status")
+async def video_feed_status():
+    global video_feed_active, start_time
+    if video_feed_active and start_time:
+        elapsed_time = time.time() - start_time
+        time_remaining = max(0, total_time - elapsed_time)
+        return {"active": video_feed_active, "time_remaining": int(time_remaining)}
+    return {"active": video_feed_active, "time_remaining": total_time}
 
 @app.post("/alt-tab")
 async def handle_alt_tab(request: Request):

@@ -114,6 +114,16 @@
             z-index: 1000; /* Ensure it appears above other elements */
             pointer-events: auto; /* Allow interaction blocking */
         }
+        #timeRemaining {
+            position: fixed;
+            top: 350px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
     </style>
 </head>
 <body>
@@ -137,6 +147,7 @@
         <div class="video-container">
             <button id="toggleButton">Start Video Feed</button>
             <img id="videoFeed" style="display: none;" alt="Video Feed">
+            <div id="timeRemaining" style="display: none;"></div>
         </div>
     </div>
 
@@ -239,7 +250,36 @@
 
             const toggleButton = document.getElementById('toggleButton');
             const videoFeed = document.getElementById('videoFeed');
+            const timeRemainingDisplay = document.getElementById('timeRemaining');
             let isActive = false;
+
+            function checkVideoFeedStatus() {
+                fetch('/video_feed_status')
+                    .then(response => response.json())
+                    .then(data => {
+                        if (!data.active || data.time_remaining <= 0) {
+                            stopVideoFeed();
+                        } else {
+                            updateTimeRemaining(data.time_remaining);
+                            setTimeout(checkVideoFeedStatus, 1000);  // Check again in 1 second
+                        }
+                    });
+            }
+
+            
+            function stopVideoFeed() {
+                isVideoActive = false;
+                toggleButton.textContent = 'Start Video Feed';
+                videoFeed.style.display = 'none';
+                videoFeed.src = '';
+                timeRemainingDisplay.style.display = 'none';
+                checkConditions();
+            }
+            
+            function updateTimeRemaining(timeRemaining) {
+                timeRemainingDisplay.textContent = `Time remaining: ${timeRemaining}s`;
+            }
+
 
             toggleButton.addEventListener('click', async () => {
                 try {
@@ -247,10 +287,13 @@
                     isVideoActive = response.data.status === 'active';
                     toggleButton.textContent = isVideoActive ? 'Stop Video Feed' : 'Start Video Feed';
                     videoFeed.style.display = isVideoActive ? 'block' : 'none';
+                    timeRemainingDisplay.style.display = isVideoActive ? 'block' : 'none';
                     if (isVideoActive) {
                         videoFeed.src = '/video_feed/{{ user }}';
+                        checkVideoFeedStatus();  // Start checking status
                     } else {
                         videoFeed.src = '';
+                        timeRemainingDisplay.style.display = 'none';
                     }
                     checkConditions();
                 } catch (error) {
