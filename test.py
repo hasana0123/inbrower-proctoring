@@ -362,13 +362,17 @@ async def get_how_it_works(request: Request):
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
+@app.get("/teachersMain", response_class=HTMLResponse)
+async def teachers_main_page(request: Request):
+    return templates.TemplateResponse("teachersMain.html", {"request": request})
+
 @app.post("/login")
 async def login(username: str = Form(...), password: str = Form(...)):
     if username in fake_user_db and password == fake_user_db[username]["password"]:
         global current_user
         current_user = username
         if username == "admin":
-            return RedirectResponse(url="/admin", status_code=302)
+            return RedirectResponse(url="/teachersMain", status_code=302)
         return RedirectResponse(url="/dashboard", status_code=302)
     return {"message": "Invalid credentials"}
 
