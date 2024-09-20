@@ -366,6 +366,14 @@ async def login_page(request: Request):
 async def teachers_main_page(request: Request):
     return templates.TemplateResponse("teachersMain.html", {"request": request})
 
+@app.get("/scheduleExam", response_class=HTMLResponse)
+async def schedule_exam_page(request: Request):
+    return templates.TemplateResponse("scheduleExam.html", {"request": request})
+
+@app.get("/studentsList", response_class=HTMLResponse)
+async def student_list_page(request: Request):
+    return templates.TemplateResponse("studentsList.html", {"request": request})
+
 @app.post("/login")
 async def login(username: str = Form(...), password: str = Form(...)):
     if username in fake_user_db and password == fake_user_db[username]["password"]:
