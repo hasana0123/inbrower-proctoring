@@ -1,62 +1,67 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/index.css">
-    <link rel="stylesheet" href="../static/styles.css">
-    <title>Students List</title>
-</head>
-<body>
-    <div id="header">
-        <div id="logo">
-            <a href="/index">
-                <img src="/static/images/InvigilAI.png" alt="" />
-            </a>
-        </div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="../static/index.css" />
+        <link rel="stylesheet" href="../static/styles.css" />
+        <title>Students List</title>
+    </head>
+    <body>
+        <div id="header">
+            <div id="logo">
+                <a href="/index">
+                    <img src="/static/images/InvigilAI.png" alt="" />
+                </a>
+            </div>
 
-        <div id="navBar">
-            <div class="home">
-                <a href="index.html">Home</a>
-            </div>
-            <div class="aboutUs">
-                <a href="aboutUs.html">About Us</a>
-            </div>
-            <div class="howItWork">
-                <a href="howItWorks.html"> How does it Work ?</a>
+            <div id="navBar">
+                <div class="home">
+                    <a href="index.html">Home</a>
+                </div>
+                <div class="aboutUs">
+                    <a href="aboutUs.html">About Us</a>
+                </div>
+                <div class="howItWork">
+                    <a href="howItWorks.html"> How does it Work ?</a>
+                </div>
             </div>
         </div>
-    </div>
-    <div class="login-container">
-        <h2 class="login-title">Add Student Account</h2>
-        <form method="POST" action="/login">
-            <div class="input-field">
-                <input
-                    type="text"
-                    name="username"
-                    placeholder="Username"
-                    required
-                />
+        <div id="StudentListContent">
+            <div id="list">
+                <h1>List of Students</h1>
             </div>
-            <div class="input-field">
-                <input
-                    type="password"
-                    name="password"
-                    placeholder="Password"
-                    required
-                />
+            <div class="login-container">
+                <h2 class="login-title">Add Student Account</h2>
+                <form method="POST" action="/login">
+                    <div class="input-field">
+                        <input
+                            type="text"
+                            name="username"
+                            placeholder="Username"
+                            required
+                        />
+                    </div>
+                    <div class="input-field">
+                        <input
+                            type="password"
+                            name="password"
+                            placeholder="Password"
+                            required
+                        />
+                    </div>
+                    <button type="submit">Add</button>
+                </form>
             </div>
-            <button type="submit">Add</button>
-        </form>
-    </div>
-    <div id="footer">
-        <h1>Contact us at</h1>
-        <p>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Voluptatum fugit optio consequatur, unde accusantium ad corrupti
-            fugiat sint sunt dolore provident debitis laborum? Quae
-            recusandae ratione tempore, reiciendis adipisci corporis.
-        </p>
-    </div>
-</body>
+        </div>
+        <div id="footer">
+            <h1>Contact us at</h1>
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Voluptatum fugit optio consequatur, unde accusantium ad corrupti
+                fugiat sint sunt dolore provident debitis laborum? Quae
+                recusandae ratione tempore, reiciendis adipisci corporis.
+            </p>
+        </div>
+    </body>
 </html>

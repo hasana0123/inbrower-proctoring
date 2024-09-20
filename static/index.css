@@ -206,29 +206,6 @@ h3 {
     color: rgb(138, 40, 40);
 }
 
-/* #content .text
-{
-    text-align: center;
-    /* border: 2px solid red; 
-} */
-
-/* #content h3 {
-    font-size: 30px;
-} */
-
-/* #continueButton a button {
-    padding: 10px 20px; 
-    font-size: 18px; 
-    background-color: rgb(70, 130, 180); 
-    color: white;
-    border: none;
-    border-radius: 5px; 
-    cursor: pointer;
-    transition: background-color 0.3s ease; 
-}
-#continueButton a button:hover {
-    background-color: rgb(50, 100, 150); 
-}
 #content .sideImage img
 {
     justify-content: inherit;
@@ -255,7 +232,6 @@ body {
     z-index: 2;
     bottom: 0;
     margin-top: auto; 
-    /* left: 0; */
 }
 #footer p {
     font-size: 20px;
@@ -265,8 +241,6 @@ body {
     /* right: 0; */
     text-align: center;
     z-index: 3;
-    /* padding: 20px; */
     width: 100%;
     position: relative;
-    /* bottom: 0; */
 }
