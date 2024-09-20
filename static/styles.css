@@ -1,8 +1,9 @@
 body {
     font-family: sans-serif;
-    background-color: #a49589;
+    /* background-color: #a49589; */
     margin: 0;
     padding: 0;
+    min-height: 100vh;
 }
 
 #loginBg {
@@ -32,13 +33,12 @@ body {
     z-index: 2; /* Keeps all other content above the overlay */
 }
 
-#loginContent {
+#loginContent ,#teachersAllContent{
     display: flex;
     align-items: center;
     /* border: 2px solid black; */
     padding: 40px;
     justify-content: center;
-    /* width: fit-content; */
 }
 #loginContent #allContent {
     display: flex;
@@ -59,13 +59,11 @@ body {
     /* border: 2px solid red; */
     justify-content: center;
     align-items: center;
-    /* background-position: center; */
 }
 
 #loginContent .welcomeMessage img {
     width: 100%;
     height: 100%;
-    /* filter: blur(3px); */
     filter: brightness(30%);
 }
 
@@ -93,7 +91,6 @@ body {
 }
 
 .login-title {
-    /* margin-bottom: 20px; */
     font-size: 40px;
     /* border: 2px solid red; */
     padding:0 ;
@@ -134,6 +131,110 @@ body {
     background-color: #195379;
 }
 
+/*Admin page css*/
+#adminBackground
+{
+    background-image: url(./images/teachersPage.jpg);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 110vh;
+}
+
+
+.burger-menu {
+    display: inline-block;
+    cursor: pointer;
+}
+
+/* Each bar of the burger */
+.burger-menu .bar {
+    width: 35px;
+    height: 5px;
+    background-color: #333; /* Set the color of the bars */
+    margin: 6px 0; /* Spacing between the bars */
+    transition: 0.4s; /* Smooth transition if you want to animate */
+}
+
+#profileSection
+{
+    border: 2px solid red;
+    padding: 30px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 90%;
+}
+.profile-section {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.profile-icon {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.profile-text {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+}
+
+
+#teachersMainContent
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    /* border: 2px solid green; */
+    height: 455px;
+    width: fit-content;
+}
+.content
+{
+    /* border: 2px solid green; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: fit-content;
+    margin: 0;
+    padding: 0;
+}
+
+.content a{
+    border: 2px solid rgba(143, 143, 143, 0.408);
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    /* padding: 30px; */
+    width: 300px;
+    height: 150px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    border-radius: 5px;
+    font-size: 30px;
+    font-weight: 900;
+    background: rgba(230, 171, 171, 0.437);
+    color: white;
+    box-shadow:5px 5px 20px 2px rgb(49, 46, 46);
+    /* box-shadow: 3px 3px 5px #888, -3px -3px 5px #555; */
+
+}
+
+.content a:hover
+{
+    border: 1px solid rgb(200, 196, 196);
+    background: rgba(175, 97, 97, 0.364);
+    color: #e3c86e;
+    border-left: none;
+    border-top: none;
+}
+
 .dashboard {
     display: flex;
     flex-direction: column;
@@ -157,12 +258,12 @@ body {
     flex: 1;
     padding: 20px;
     width: calc(100% - 480px);
-    margin-top: 100px; /* Added margin to account for fixed header */
+    margin-top: 100px; /* Added margin to account for fixed header
     /* position: fixed;
     top: 0;
     left: 0;
     z-index: 1000; */
-}
+} 
 
 .question-list {
     flex: 1;
