@@ -8,7 +8,7 @@ body {
 
 #loginBg {
     position: relative;
-    background-image: url(../static/images/loginBg.jpg);
+    background-image: url("/static/images/loginBg.jpg") !important;
     background-position: center;
     background-repeat: repeat-y;
     background-size: cover;

@@ -31,6 +31,7 @@
             cursor: pointer; /* Pointer cursor on hover */
             transition: background-color 0.3s, transform 0.2s; /* Smooth transitions */
             z-index: 1000; /* Ensure it appears above other elements */
+            display: none; /* Initially hidden */
         }
 
         /* Apply blur to the background */
@@ -114,6 +115,7 @@
             z-index: 1000; /* Ensure it appears above other elements */
             pointer-events: auto; /* Allow interaction blocking */
         }
+
         #timeRemaining {
             position: fixed;
             top: 350px;
@@ -123,6 +125,29 @@
             padding: 5px 10px;
             border-radius: 5px;
             font-size: 14px;
+        }
+
+        .rules-box {
+            border: 2px solid #009688; /* Border color and thickness */
+            border-radius: 8px; /* Rounded corners */
+            padding: 20px; /* Spacing inside the box */
+            background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */       
+            max-width: 600px; /* Maximum width of the box */
+            margin: 0 auto; /* Center the box on the page */
+        }
+        
+        .rules-content {
+            text-align: left; /* Align text to the left */
+            color: white; /* Text color */
+            font-size: 20px; /* Increased font size for rules text */
+        }
+        
+        .rules-heading {
+            color: #009688; /* Change this to your desired color */
+            font-size: 40px; /* Increased font size for the heading */
+            font-weight: bold; /* Make it bold */
+            text-align: center; /* Center align the heading */
+            margin: 10px 0; /* Reduced spacing above and below the heading */
         }
     </style>
 </head>
@@ -151,8 +176,22 @@
         </div>
     </div>
 
+    <!-- Rules Screen -->
+    <div id="rulesScreen" class="warning-screen" style="display: flex;">
+        <div class="rules-box">
+            <div class="rules-content">
+                <h2 class="rules-heading">Rules and Regulations</h2>
+                <p>1. No cheating allowed.</p>
+                <p>2. Follow all instructions carefully.</p>
+                <p>3. Keep your camera on at all times.</p>
+                <p>4. Report any technical issues immediately.</p>
+                <button class="redirect-link" id="startButton">Enter the Exam</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Overlay to block interactions -->
-    <div id="overlay" class="overlay"></div>
+    <div id="overlay" class="overlay" style="display: none;"></div>
 
     <!-- Warning Screen -->
     <div id="warningScreen" class="warning-screen">
@@ -163,7 +202,24 @@
     <script>
         document.addEventListener('DOMContentLoaded', (event) => {
             let isFullscreen = false;
-            // let isVideoActive = false;
+            let isVideoActive = false;
+
+            // Hide the video feed button initially
+            const toggleButton = document.getElementById('toggleButton');
+            toggleButton.style.display = 'none';
+
+            // Remove overlay for initial rules interaction
+            document.getElementById('overlay').style.display = 'none';
+
+            document.getElementById('startButton').addEventListener('click', () => {
+                // Hide rules screen
+                document.getElementById('rulesScreen').style.display = 'none';
+                document.getElementById('overlay').style.display = 'none'; // Allow interaction
+                document.getElementById('content').classList.remove('blur'); // Unblur content
+
+                // Show fullscreen button
+                fullscreenButton.style.display = 'block'; // Show fullscreen button after rules are dismissed
+            });
 
             // Function to request fullscreen mode
             function enterFullscreen() {
@@ -176,12 +232,17 @@
                 } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
                     document.documentElement.msRequestFullscreen();
                 }
+
                 // Remove the fullscreen button after fullscreen is requested
                 fullscreenButton.style.display = 'none';
                 // Remove the background blur and overlay after entering fullscreen
                 document.getElementById('content').classList.remove('blur');
                 document.getElementById('overlay').style.display = 'none';
                 isFullscreen = true;
+
+                // Show the video feed button only after entering fullscreen
+                toggleButton.style.display = 'block'; // Show video feed button after entering fullscreen
+
                 checkConditions();
             }
 
@@ -193,6 +254,7 @@
                 document.getElementById('content').classList.add('blur');
                 document.getElementById('overlay').style.display = 'block';
                 isFullscreen = false;
+                toggleButton.style.display = 'none'; // Hide video feed button when exiting fullscreen
                 checkConditions();
             }
 
@@ -248,10 +310,8 @@
             // Apply blur to the background
             document.getElementById('content').classList.add('blur'); // Blurs the content
 
-            const toggleButton = document.getElementById('toggleButton');
             const videoFeed = document.getElementById('videoFeed');
             const timeRemainingDisplay = document.getElementById('timeRemaining');
-            let isActive = false;
 
             function checkVideoFeedStatus() {
                 fetch('/video_feed_status')
@@ -266,7 +326,6 @@
                     });
             }
 
-            
             function stopVideoFeed() {
                 isVideoActive = false;
                 toggleButton.textContent = 'Start Video Feed';
@@ -279,7 +338,6 @@
             function updateTimeRemaining(timeRemaining) {
                 timeRemainingDisplay.textContent = `Time remaining: ${timeRemaining}s`;
             }
-
 
             toggleButton.addEventListener('click', async () => {
                 try {
@@ -306,51 +364,50 @@
             let endTime = null;
 
             // Handle fullscreen and visibility changes
-        document.addEventListener('fullscreenchange', () => {
-            fullscreenActive = document.fullscreenElement !== null;
-            if (fullscreenActive) {
-                startTime = Date.now();
-            } else if (startTime) {
-                endTime = Date.now();
-                sendTimeData('fullscreen');
-            }
-        });
+            document.addEventListener('fullscreenchange', () => {
+                fullscreenActive = document.fullscreenElement !== null;
+                if (fullscreenActive) {
+                    startTime = Date.now();
+                } else if (startTime) {
+                    endTime = Date.now();
+                    sendTimeData('fullscreen');
+                }
+            });
 
-        document.addEventListener('visibilitychange', () => {
-            if (fullscreenActive && document.hidden) {
-                startTime = Date.now();
-            } else if (fullscreenActive && !document.hidden && startTime) {
-                endTime = Date.now();
-                sendTimeData('alt-tab');
-            }
-        });
+            document.addEventListener('visibilitychange', () => {
+                if (fullscreenActive && document.hidden) {
+                    startTime = Date.now();
+                } else if (fullscreenActive && !document.hidden && startTime) {
+                    endTime = Date.now();
+                    sendTimeData('alt-tab');
+                }
+            });
 
-        // Send time data to the server
-        function sendTimeData(type) {
-            if (startTime && endTime) {
-                const timeElapsed = endTime - startTime;
-                const formattedTime = formatTime(timeElapsed);
-                fetch('/alt-tab', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({
-                        type: type,
-                        start_time: startTime,
-                        end_time: endTime,
-                        time_elapsed: formattedTime
-                    })
-                });
-                startTime = endTime = null; // Reset times
+            // Send time data to the server
+            function sendTimeData(type) {
+                if (startTime && endTime) {
+                    const timeElapsed = endTime - startTime;
+                    const formattedTime = formatTime(timeElapsed);
+                    fetch('/alt-tab', {
+                        method: 'POST',
+                        headers: {'Content-Type': 'application/json'},
+                        body: JSON.stringify({
+                            type: type,
+                            start_time: startTime,
+                            end_time: endTime,
+                            time_elapsed: formattedTime
+                        })
+                    });
+                    startTime = endTime = null; // Reset times
+                }
             }
-        }
 
-        // Format time in seconds and milliseconds
-        function formatTime(milliseconds) {
-            const seconds = Math.floor(milliseconds / 1000);
-            const ms = milliseconds % 1000;
-            return `${seconds}.${Math.floor(ms / 10)} s`; // Display in seconds and tenths of seconds
-        }
-            
+            // Format time in seconds and milliseconds
+            function formatTime(milliseconds) {
+                const seconds = Math.floor(milliseconds / 1000);
+                const ms = milliseconds % 1000;
+                return `${seconds}.${Math.floor(ms / 10)} s`; // Display in seconds and tenths of seconds
+            }
         });
     </script>
 </body>

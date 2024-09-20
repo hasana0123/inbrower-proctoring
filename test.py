@@ -54,11 +54,15 @@ R_H_RIGHT = [263]
 
 eye_cheating = False
 head_cheating = False
-sound_detected = False
+# sound_detected = False
 video_feed_active = False
 video_cap = None
+sound_detected = False
+audio_detection_active = False
+stream = None  # Initialize stream variable
+# time_remaining = 0
 
-total_time = 30  # 5 minutes in seconds
+total_time = 60
 start_time = None
 cheating_data = []
 
@@ -109,7 +113,7 @@ def iris_position(iris_center, right_point, left_point):
         return "LEFT", gaze_ratio
     
 def detect_sound():
-    global sound_detected
+    global sound_detected, stream
     # PyAudio setup for sound detection
     FORMAT = pyaudio.paInt16  # Audio format (16-bit resolution)
     CHANNELS = 1              # Mono channel
@@ -155,11 +159,6 @@ def detect_sound():
     # Terminate PyAudio object
     p.terminate()
 
-# Start the audio detection in a background thread
-# audio_thread = threading.Thread(target=detect_sound)
-# audio_thread.daemon = True  # Ensure it closes with the main program
-# audio_thread.start()
-
 def start_audio_detection():
     global audio_detection_active
     audio_detection_active = True
@@ -168,9 +167,12 @@ def start_audio_detection():
     audio_thread.start()
 
 def stop_audio_detection():
-    global audio_detection_active
+    global audio_detection_active, stream
     audio_detection_active = False
     print("Audio detection stopped.")
+    if stream is not None:
+        stream.stop_stream()
+        stream.close()
 
 anti_spoofing_model = YOLO('best.pt')
 
@@ -185,11 +187,11 @@ def predict_anti_spoofing(image):
     return "Unknown", 0.0
 
 def generate_video_feed(username):
-    global eye_cheating, head_cheating, video_feed_active, multiple_persons_detected, book_detected, phone_detected, start_time
-    cap = cv.VideoCapture(0)
+    global eye_cheating, head_cheating, video_feed_active, multiple_persons_detected, book_detected, phone_detected, start_time, video_cap
+    video_cap = cv.VideoCapture(1)
     with mp_face_mesh.FaceMesh(max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5, min_tracking_confidence=0.5) as face_mesh:
         while video_feed_active:
-            ret, frame = cap.read()
+            ret, frame = video_cap.read()
             if not ret:
                 break
             frame = cv.flip(frame, 1)
@@ -289,7 +291,6 @@ def generate_video_feed(username):
 
                 elapsed_time = time.time() - start_time
                 user_cheating_data[username].append((elapsed_time, is_cheating))
-                # cheating_data.append((elapsed_time, is_cheating))
 
                 color = (0, 0, 255) if is_cheating else (0, 255, 0)
                 text = "CHEATING DETECTED" if is_cheating else "NO CHEATING DETECTED"
@@ -317,7 +318,7 @@ def generate_video_feed(username):
             phone_detected = False
 
 
-    cap.release()
+    video_cap.release()
 
 
 def generate_cheating_graph(username):
@@ -342,14 +343,6 @@ def generate_cheating_graph(username):
     
     return image_base64
 
-# @app.post("/alt-tab")
-# async def alt_tab_alert(request: Request):
-#     data = await request.json()
-#     if data.get("alt_tab") == "true":
-#         async with httpx.AsyncClient() as client:
-#             response = await client.post("http://localhost:8000/alt-tab", json={"alt_tab": "true"})
-#             return {"message": "Alt+Tab detected and reported"}
-#     return {"message": "No Alt+Tab detected"}
 
 @app.get("/", response_class=HTMLResponse)
 async def index_page(request: Request):
@@ -365,10 +358,6 @@ async def get_about_us(request: Request):
 async def get_how_it_works(request: Request):
     return templates.TemplateResponse("howItWorks.html", {"request": request})
 
-# @app.get("/login", response_class=HTMLResponse)
-# async def login_page(request: Request):
-#     return templates.TemplateResponse("login.html", {"request": request})
-
 @app.get("/login", response_class=HTMLResponse)
 async def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
@@ -383,26 +372,11 @@ async def login(username: str = Form(...), password: str = Form(...)):
         return RedirectResponse(url="/dashboard", status_code=302)
     return {"message": "Invalid credentials"}
 
-# @app.post("/login")
-# async def login(username: str = Form(...), password: str = Form(...)):
-#     if username == fake_user_db["user"]["username"] and password == fake_user_db["user"]["password"]:
-#         global current_user
-#         current_user = username
-#         return RedirectResponse(url="/dashboard", status_code=302)
-#     return {"message": "Invalid credentials"}
-
 @app.get("/dashboard", response_class=HTMLResponse)
 async def dashboard(request: Request):
     if current_user:
         return templates.TemplateResponse("dashboard.html", {"request": request, "user": current_user})
     return RedirectResponse(url="/")
-
-# @app.get("/admin", response_class=HTMLResponse)
-# async def admin_dashboard(request: Request):
-#     if current_user == "admin":
-#         graph = generate_cheating_graph()
-#         return templates.TemplateResponse("admin.html", {"request": request, "user": current_user, "graph": graph})
-#     return RedirectResponse(url="/")
 
 @app.get("/admin", response_class=HTMLResponse)
 async def admin_dashboard(request: Request):
@@ -414,9 +388,10 @@ async def admin_dashboard(request: Request):
 @app.get("/admin/user/{username}")
 async def admin_user_dashboard(username: str):
     if current_user == "admin":
-        graph = generate_cheating_graph(username)
-        if graph:
-            return HTMLResponse(f'<img src="data:image/png;base64,{graph}" alt="Cheating Graph for {username}">')
+        # graph = generate_cheating_graph(username)
+        graphs = generate_cheating_graph(username)
+        if graphs:
+            return HTMLResponse(f'<img src="data:image/png;base64,{graphs}" alt="Cheating Graph for {username}">')
         return HTMLResponse('<p>No data available for this user.</p>')
     # raise HTTPException(status_code=403, detail="Not authorized")
 
@@ -427,13 +402,33 @@ async def video_feed(username: str):
     return RedirectResponse(url="/")
 
 # Add a new endpoint to check the video feed status
+# @app.get("/video_feed_status")
+# async def video_feed_status():
+#     global video_feed_active, start_time
+#     if video_feed_active and start_time:
+#         elapsed_time = time.time() - start_time
+#         time_remaining = max(0, total_time - elapsed_time)
+#         return {"active": video_feed_active, "time_remaining": int(time_remaining)}
+#     return {"active": video_feed_active, "time_remaining": total_time}
+
 @app.get("/video_feed_status")
 async def video_feed_status():
-    global video_feed_active, start_time
+    global video_feed_active, start_time, total_time
+    
     if video_feed_active and start_time:
         elapsed_time = time.time() - start_time
         time_remaining = max(0, total_time - elapsed_time)
+
+        # If time_remaining is 0, deactivate the video feed
+        if time_remaining <= 0:
+            video_feed_active = False
+            stop_audio_detection()  # Stop audio detection
+            if video_cap is not None:
+                video_cap.release()  # Release the camera
+                video_cap = None  # Reset the capture object
+        
         return {"active": video_feed_active, "time_remaining": int(time_remaining)}
+    
     return {"active": video_feed_active, "time_remaining": total_time}
 
 @app.post("/alt-tab")
@@ -468,7 +463,6 @@ async def toggle_video_feed():
         stop_audio_detection()  # Stop audio detection when video feed stops
         if video_cap is not None:
             video_cap.release()  # Release the camera
-            video_cap = None  # Reset the capture object
     return {"status": "active" if video_feed_active else "inactive"}
 
 if __name__ == "__main__":
