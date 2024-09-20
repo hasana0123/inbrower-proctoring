@@ -33,6 +33,7 @@
 
 #logo img:hover {
     background-color: rgba(175, 115, 102, 0.267);
+    box-shadow: 1px 1px 20px 1px rgb(100, 95, 95); 
 }
 
 #navBar {
@@ -83,6 +84,7 @@
         rgba(215, 142, 128, 0.69),
         rgb(235, 161, 118)
     );
+    box-shadow: 1px 1px 20px 1px rgb(100, 95, 95); 
 }
 
 #aboutUsContent,

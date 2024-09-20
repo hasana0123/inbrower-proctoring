@@ -145,6 +145,17 @@ body {
 .burger-menu {
     display: inline-block;
     cursor: pointer;
+    /* align-items: center;
+    justify-content: center; */
+    /* border: 2px solid red; */
+    border-radius: 5px;
+    padding: 16px;
+    /* box-shadow: 1px 1px 20px 1px rgb(100, 95, 95); */
+}
+.burger-menu:hover
+{
+    background: rgba(158, 89, 89, 0.249);
+    box-shadow: 1px 1px 20px 1px rgb(100, 95, 95); 
 }
 
 /* Each bar of the burger */
@@ -156,31 +167,51 @@ body {
     transition: 0.4s; /* Smooth transition if you want to animate */
 }
 
+#profileContent
+{
+    /* border: 2px solid red; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 #profileSection
 {
-    border: 2px solid red;
+    /* border: 2px solid red; */
     padding: 30px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
-    width: 90%;
+    width: 70%;
 }
 .profile-section {
     display: flex;
     align-items: center;
     cursor: pointer;
+    /* border: 2px solid red; */
+    border-radius: 5px;
+    padding: auto;
+    padding-right: 10px;
+}
+
+.profile-section:hover
+{
+    background: rgba(134, 82, 82, 0.2);
+    box-shadow: 1px 1px 20px 1px rgb(100, 95, 95); 
+
 }
 
 .profile-icon {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
+    width: 60px;
+    height: 60px;
+    /* margin-right: 10px; */
 }
 
 .profile-text {
-    font-size: 18px;
+    font-size: 25px;
     font-weight: bold;
     color: #333;
+    margin: 0;
 }
 
 
