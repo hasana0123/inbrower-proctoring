@@ -1,13 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/index.css">
-    <link rel="stylesheet" href="../static/styles.css">
-    <title>Schedule Exam</title>
-</head>
-<body>
-    
-</body>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="../static/index.css" />
+        <link rel="stylesheet" href="../static/styles.css" />
+        <title>Schedule Exam</title>
+    </head>
+    <body>
+        <div id="scheduleBackground">
+            <div id="header">
+                <div id="logo">
+                    <a href="/">
+                        <img src="/static/images/InvigilAI.png" alt="" />
+                    </a>
+                </div>
+
+                <div id="navBar">
+                    <div class="home">
+                        <a href="/">Home</a>
+                    </div>
+                    <div class="aboutUs">
+                        <a href="./aboutUs">About Us</a>
+                    </div>
+                    <div class="howItWork">
+                        <a href="./howItWorks"> How does it Work ?</a>
+                    </div>
+                </div>
+            </div>
+            <div id="scheduleContent">
+                <form action="https://forms.google.com" method="get">
+                    <h2>Schedule an Exam</h2>
+                    <label for="subject">Subject:</label>
+                    <input
+                        type="text"
+                        id="subject"
+                        name="subject"
+                        placeholder="Enter subject"
+                        required
+                    /><br /><br />
+
+                    <label for="date">Date:</label>
+                    <input
+                        type="date"
+                        id="date"
+                        name="date"
+                        required
+                    /><br /><br />
+
+                    <label for="time">Time:</label>
+                    <input
+                        type="time"
+                        id="time"
+                        name="time"
+                        step="60"
+                        required
+                    /><br /><br />
+                    
+                    <label for="duration">Duration:</label>
+                    <select id="duration" name="duration">
+                        <option value="">Select Duration</option>
+                        <option value="1">1 hour</option>
+                        <option value="2">2 hours</option>
+                        <option value="3">3 hours</option>
+                        </select
+                    ><br /><br />
+
+                    <button type="submit">Go to Google Forms</button>
+                </form>
+            </div>
+            <div id="footer">
+                <h1>Contact us at</h1>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Voluptatum fugit optio consequatur, unde accusantium ad
+                    corrupti fugiat sint sunt dolore provident debitis laborum?
+                    Quae recusandae ratione tempore, reiciendis adipisci
+                    corporis.
+                </p>
+            </div>
+        </div>
+    </body>
 </html>

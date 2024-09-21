@@ -152,7 +152,7 @@
 
         .form-actions {
             display: flex;
-            justify-content: flex-end; /* Align buttons to the right */
+            justify-content: center; /* Align buttons to the right */
             margin-top: 10px; /* Add spacing above buttons */
         }
         
@@ -199,7 +199,7 @@
                 </div>                
                 <!-- New Buttons -->
                 <div class="form-actions">
-                    <p style="color: black; margin-right: 10px;">Submit Google Forms before returning to login.</p>                    
+                    <p style="color: black; margin-right: 500px;">Submit Google Forms before returning to login.</p>                    
                     <button id="returnLoginButton" class="form-button" style="display: none;" onclick="window.location.href='login'">Return to Login</button>
                 </div>   
             </div>
@@ -285,6 +285,7 @@
             function handleFullscreenExit() {
                 // Show warning screen
                 document.getElementById('warningScreen').style.display = 'flex';
+                warningScreen.style.flexDirection = 'column';
                 // Apply blur to the background
                 document.getElementById('content').classList.add('blur');
                 document.getElementById('overlay').style.display = 'block';

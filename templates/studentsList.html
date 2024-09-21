@@ -1,66 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/index.css">
-    <link rel="stylesheet" href="../static/styles.css">
-    <title>Students List</title>
-</head>
-<body>
-    <div id="header">
-        <div id="logo">
-            <a href="/">
-                <img src="/static/images/InvigilAI.png" alt="" />
-            </a>
-        </div>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="stylesheet" href="../static/index.css" />
+        <link rel="stylesheet" href="../static/styles.css" />
+        <title>Students List</title>
+    </head>
+    <body>
+        <div id="studentListBackground">
+            <!-- <img src="/static/images/scheduleBg.jpg" alt="" /> -->
+            <div id="header">
+                <div id="logo">
+                    <a href="/">
+                        <img src="/static/images/InvigilAI.png" alt="" />
+                    </a>
+                </div>
 
-        <div id="navBar">
-            <div class="home">
-                <a href="/">Home</a>
-            </div>
-            <div class="aboutUs">
-                <a href="./aboutUs">About Us</a>
-            </div>
-            <div class="howItWork">
-                <a href="./howItWorks"> How does it Work ?</a>
-            </div>
-        </div>
-        <div id="StudentListContent">
-            <div id="list">
-                <h1>List of Students</h1>
-            </div>
-            <div class="login-container">
-                <h2 class="login-title">Add Student Account</h2>
-                <form method="POST" action="/add_student">
-                    <div class="input-field">
-                        <input
-                            type="text"
-                            name="username"
-                            placeholder="Username"
-                            required
-                        />
+                <div id="navBar">
+                    <div class="home">
+                        <a href="/">Home</a>
                     </div>
-                    <div class="input-field">
-                        <input
-                            type="password"
-                            name="password"
-                            placeholder="Password"
-                            required
-                        />
+                    <div class="aboutUs">
+                        <a href="./aboutUs">About Us</a>
                     </div>
-                    <button type="submit">Add</button>
-                </form>
+                    <div class="howItWork">
+                        <a href="./howItWorks"> How does it Work ?</a>
+                    </div>
+                </div>
             </div>
-        </div>
-        <div id="footer">
-            <h1>Contact us at</h1>
-            <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Voluptatum fugit optio consequatur, unde accusantium ad corrupti
-                fugiat sint sunt dolore provident debitis laborum? Quae
-                recusandae ratione tempore, reiciendis adipisci corporis.
-            </p>
+            <div id="StudentListContent">
+                <div id="addContent">
+                    <div class="list-section">
+                        <h1>List of Students</h1>
+                    </div>
+                    <div class="add-container">
+                        <form method="POST" action="/login">
+                            <h2 class="add-title">Add Student Account</h2>
+                            <div class="input-field">
+                                <input
+                                    type="text"
+                                    name="username"
+                                    placeholder="Username"
+                                    required
+                                />
+                            </div>
+                            <div class="input-field">
+                                <input
+                                    type="password"
+                                    name="password"
+                                    placeholder="Password"
+                                    required
+                                />
+                            </div>
+                            <button type="submit">Add</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div id="footer">
+                <h1>Contact us at</h1>
+                <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Voluptatum fugit optio consequatur, unde accusantium ad
+                    corrupti fugiat sint sunt dolore provident debitis laborum?
+                    Quae recusandae ratione tempore, reiciendis adipisci
+                    corporis.
+                </p>
+            </div>
         </div>
     </body>
 </html>

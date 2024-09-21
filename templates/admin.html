@@ -1,57 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard</title>
-    <link rel="stylesheet" href="../static/styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-</head>
-<body>
-    <div class="dashboard">
-        <div class="header">
-            <h1>Admin Dashboard</h1>
-        </div>
-        <div class="content">
-            <h2>Select a user to view their cheating data:</h2>
-            <ul class="user-list">
-                {% for user in users %}
-                    <li><button class="user-button" data-username="{{ user }}">{{ user }}</button></li>
-                {% endfor %}
-            </ul>
-            <div id="user-data">
-                <h2>Cheating Detection Results</h2>
-                <div id="graph-container">
-                    <p>Select a user to view their data.</p>
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Admin Dashboard</title>
+        <link rel="stylesheet" href="../static/styles.css" />
+        <link rel="stylesheet" href="../static/index.css" />
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    </head>
+    <body>
+        <div id="adminDashBackground">
+            <div id="header">
+                <div id="logo">
+                    <a href="/">
+                        <img src="/static/images/InvigilAI.png" alt="" />
+                    </a>
+                </div>
+
+                <div id="navBar">
+                    <div class="home">
+                        <a href="/">Home</a>
+                    </div>
+                    <div class="aboutUs">
+                        <a href="./aboutUs">About Us</a>
+                    </div>
+                    <div class="howItWork">
+                        <a href="./howItWorks"> How does it Work ?</a>
+                    </div>
+                </div>
+            </div>
+            <div class="dashboard">
+                <div class="adminContent">
+                    <h1>Admin Dashboard</h1>
+                    <div class="content">
+                        <div id="list">
+                            <h2>Select a user to view their cheating data:</h2>
+                            <ul class="user-list">
+                                {% for user in users %}
+                                <li>
+                                    <button
+                                        class="user-button"
+                                        data-username="{{ user }}"
+                                    >
+                                        {{ user }}
+                                    </button>
+                                </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div id="user-data">
+                            <h2>Cheating Detection Results</h2>
+                            <div id="graph-container">
+                                <p>Select a user to view their data.</p>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+        <div id="footer">
+            <h1>Contact us at</h1>
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Voluptatum fugit optio consequatur, unde accusantium ad corrupti
+                fugiat sint sunt dolore provident debitis laborum? Quae
+                recusandae ratione tempore, reiciendis adipisci corporis.
+            </p>
+        </div>
 
-    <script>
-        const userButtons = document.querySelectorAll('.user-button');
-        const graphContainer = document.getElementById('graph-container');
+        <script>
+            const userButtons = document.querySelectorAll(".user-button");
+            const graphContainer = document.getElementById("graph-container");
 
-        userButtons.forEach(button => {
-            button.addEventListener('click', async () => {
-                const username = button.getAttribute('data-username');
-                try {
-                    const response = await axios.get(`/admin/user/${username}`);
-                    const parser = new DOMParser();
-                    const htmlDoc = parser.parseFromString(response.data, 'text/html');
-                    const graphImg = htmlDoc.querySelector('img');
-                    if (graphImg) {
-                        graphContainer.innerHTML = '';
-                        graphContainer.appendChild(graphImg);
-                    } else {
-                        graphContainer.innerHTML = '<p>No data available for this user.</p>';
+            userButtons.forEach((button) => {
+                button.addEventListener("click", async () => {
+                    const username = button.getAttribute("data-username");
+                    try {
+                        const response = await axios.get(
+                            `/admin/user/${username}`
+                        );
+                        const parser = new DOMParser();
+                        const htmlDoc = parser.parseFromString(
+                            response.data,
+                            "text/html"
+                        );
+                        const graphImg = htmlDoc.querySelector("img");
+                        if (graphImg) {
+                            graphContainer.innerHTML = "";
+                            graphContainer.appendChild(graphImg);
+                        } else {
+                            graphContainer.innerHTML =
+                                "<p>No data available for this user.</p>";
+                        }
+                    } catch (error) {
+                        console.error("Error fetching user data:", error);
+                        graphContainer.innerHTML =
+                            "<p>Error loading user data.</p>";
                     }
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                    graphContainer.innerHTML = '<p>Error loading user data.</p>';
-                }
+                });
             });
-        });
-    </script>
-</body>
+        </script>
+    </body>
 </html>

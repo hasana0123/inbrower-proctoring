@@ -328,7 +328,7 @@ def predict_anti_spoofing(image):
 
 def generate_video_feed(username):
     global eye_cheating, head_cheating, video_feed_active, multiple_persons_detected, book_detected, phone_detected, start_time, video_cap
-    video_cap = cv.VideoCapture(0)
+    video_cap = cv.VideoCapture(1)
     with mp_face_mesh.FaceMesh(max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5, min_tracking_confidence=0.5) as face_mesh:
         while video_feed_active:
             ret, frame = video_cap.read()
