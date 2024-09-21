@@ -228,14 +228,16 @@ body {
     width: fit-content;
 }
 
-#scheduleBackground {
+#scheduleBackground,#adminDashBackground {
     /* background-color: #3a3a3a; */
-    padding: 20px 0;
+    /* padding: 20px 0; */
+    margin: 0;
     background-image: url(./images/scheduleBg.jpg);
     position: relative;
     background-position: center;
     background-repeat: repeat-y;
     background-size: cover;
+    /* background-repeat: repeat-y; */
     justify-content: center; /* Centers horizontally */
     align-items: center;
     /* display: flex; */
@@ -321,8 +323,9 @@ button:hover {
 {
     /* border: 2px solid green; */
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+    /* align-items: center; */
     width: fit-content;
     margin: 0;
     padding: 0;
@@ -360,13 +363,38 @@ button:hover {
 
 .dashboard {
     display: flex;
+    /* flex-direction: column; */
+    justify-content: center;
+    /* min-height: 90vh; */
+    margin: 0;
+    
+}
+
+.dashboard .adminContent
+{
+    /* border: 2px solid red; */
+    display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    /* justify-content: center; */
+    align-items: center;
+    width: 90%;
+    background: rgba(245, 222, 179, 0.285);
+    height: fit-content;
+    min-height: 60vh;
+}
+
+.dashboard .adminContent h1{
+    text-align: center;
+    /* border: 2px solid white; */
+    padding: 30px;
+    width: 90%;
+    border-radius: 10px;
+
+    background-color: #0f901a;
+    color: rgb(251, 245, 245);
 }
 
 .header {
-    background-color: #3498db;
-    color: white;
     padding: 20px;
     text-align: center;
     width: calc(100% - 480px);
@@ -380,7 +408,8 @@ button:hover {
     display: flex;
     flex: 1;
     padding: 20px;
-    width: calc(100% - 480px);
+    /* width: calc(100% - 480px); */
+    width: 90%;
     margin-top: 100px; /* Added margin to account for fixed header
     /* position: fixed;
     top: 0;
