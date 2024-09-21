@@ -1,7 +1,7 @@
 import cv2 as cv
 import numpy as np
 import mediapipe as mp
-from fastapi import FastAPI, Form, Request, WebSocket, HTTPException
+from fastapi import FastAPI, Form, Request, WebSocket, HTTPException, status, Depends
 from fastapi.responses import StreamingResponse, HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -22,10 +22,6 @@ import json
 from ultralytics import YOLO 
 from PIL import Image
 
-# FastAPI and other imports
-from fastapi import FastAPI, HTTPException, Depends, status, Form
-from fastapi.responses import RedirectResponse
-from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from typing import Annotated
@@ -263,7 +259,7 @@ def detect_sound():
     CHANNELS = 1              # Mono channel
     RATE = 44100              # Sampling rate (44.1kHz)
     CHUNK = 1024              # Number of samples per chunk
-    THRESHOLD = 500           # Adjust this value based on your environment
+    THRESHOLD = 1000           # Adjust this value based on your environment
 
     # Initialize PyAudio object
     p = pyaudio.PyAudio()
@@ -534,13 +530,6 @@ async def dashboard(request: Request):
         return templates.TemplateResponse("dashboard.html", {"request": request, "user": current_user})
     return RedirectResponse(url="/")
 
-# @app.get("/admin", response_class=HTMLResponse)
-# async def admin_dashboard(request: Request):
-#     if current_user == "admin":
-#         users = [u for u in fake_user_db if u != "admin"]
-#         return templates.TemplateResponse("admin.html", {"request": request, "users": users})
-#     return RedirectResponse(url="/")
-
 @app.get("/admin/user/{username}")
 async def admin_user_dashboard(username: str):
     if current_user == "admin":
@@ -556,16 +545,6 @@ async def video_feed(username: str):
     if current_user and video_feed_active:
         return StreamingResponse(generate_video_feed(username), media_type="multipart/x-mixed-replace; boundary=frame")
     return RedirectResponse(url="/")
-
-# Add a new endpoint to check the video feed status
-# @app.get("/video_feed_status")
-# async def video_feed_status():
-#     global video_feed_active, start_time
-#     if video_feed_active and start_time:
-#         elapsed_time = time.time() - start_time
-#         time_remaining = max(0, total_time - elapsed_time)
-#         return {"active": video_feed_active, "time_remaining": int(time_remaining)}
-#     return {"active": video_feed_active, "time_remaining": total_time}
 
 @app.get("/video_feed_status")
 async def video_feed_status():
