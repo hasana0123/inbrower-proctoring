@@ -6,9 +6,11 @@ body {
     min-height: 100vh;
 }
 
+/*Login Css*/
+
 #loginBg {
-    position: relative;
     background-image: url("/static/images/loginBg.jpg") !important;
+    position: relative;
     background-position: center;
     background-repeat: repeat-y;
     background-size: cover;
@@ -132,6 +134,7 @@ body {
 }
 
 /*Admin page css*/
+
 #adminBackground
 {
     background-image: url(./images/teachersPage.jpg);
@@ -214,7 +217,6 @@ body {
     margin: 0;
 }
 
-
 #teachersMainContent
 {
     display: flex;
@@ -225,6 +227,96 @@ body {
     height: 455px;
     width: fit-content;
 }
+
+#scheduleBackground {
+    /* background-color: #3a3a3a; */
+    padding: 20px 0;
+    background-image: url(./images/scheduleBg.jpg);
+    position: relative;
+    background-position: center;
+    background-repeat: repeat-y;
+    background-size: cover;
+    justify-content: center; /* Centers horizontally */
+    align-items: center;
+    /* display: flex; */
+    height: 105vh;
+}
+
+#scheduleContent {
+    margin: 20px auto;
+    padding: 20px;
+    width: 400px;
+    background-color: #fff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+#ScheduleContent form {
+    display: flex;
+    flex-direction: column;
+}
+
+#scheduleContent form label {
+    font-size: 16px;
+    margin-bottom: 8px;
+}
+#scheduleContent form h2
+{
+    text-align: center;
+    padding: 20px;
+}
+
+input[type="text"],
+input[type="date"],
+input[type="time"],
+select {
+    font-size: 16px;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    width: 100%;
+    box-sizing: border-box;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s ease;
+}
+
+#scheduleContent form input[type="text"]:focus,
+#scheduleContent form input[type="date"]:focus,
+#scheduleContent form input[type="time"]:focus,
+#scheduleContent form select:focus {
+    border-color: #007BFF;
+    background-color: #b2ebf2;
+}
+
+#scheduleContent form input[type="text"]:hover,
+#scheduleContent form input[type="date"]:hover,
+#scheduleContent form input[type="time"]:hover,
+#scheduleContent form select:hover {
+    /* border-color: #007BFF; */
+    background: #35373a19;
+    background-color: #e0f7fa; 
+}
+
+
+button {
+    padding: 12px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #0c6025;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    transition: cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+button:hover {
+    background-color: #07b429;
+    /* color: rgb(139, 139, 24); */
+}
+
+
 .content
 {
     /* border: 2px solid green; */
