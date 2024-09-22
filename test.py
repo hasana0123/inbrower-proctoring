@@ -259,7 +259,7 @@ def detect_sound():
     CHANNELS = 1              # Mono channel
     RATE = 44100              # Sampling rate (44.1kHz)
     CHUNK = 1024              # Number of samples per chunk
-    THRESHOLD = 1000           # Adjust this value based on your environment
+    THRESHOLD = 2000           # Adjust this value based on your environment
 
     # Initialize PyAudio object
     p = pyaudio.PyAudio()
@@ -328,7 +328,7 @@ def predict_anti_spoofing(image):
 
 def generate_video_feed(username):
     global eye_cheating, head_cheating, video_feed_active, multiple_persons_detected, book_detected, phone_detected, start_time, video_cap
-    video_cap = cv.VideoCapture(1)
+    video_cap = cv.VideoCapture(0)
     with mp_face_mesh.FaceMesh(max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5, min_tracking_confidence=0.5) as face_mesh:
         while video_feed_active:
             ret, frame = video_cap.read()
@@ -362,8 +362,15 @@ def generate_video_feed(username):
                 iris_center_left = np.array([l_cx, l_cy], dtype=np.int32)
                 iris_center_right = np.array([r_cx, r_cy], dtype=np.int32)
 
+                # cv.circle(frame, iris_center_left, int(l_radius), (0, 255, 0), 1)
+                # cv.circle(frame, iris_center_right, int(r_radius), (0, 255, 0), 1)
+
                 cv.circle(frame, iris_center_left, int(l_radius), (0, 255, 0), 1)
                 cv.circle(frame, iris_center_right, int(r_radius), (0, 255, 0), 1)
+                cv.circle(frame, mesh_points[L_H_LEFT][0], 1, (0, 255, 0), 1)
+                cv.circle(frame, mesh_points[L_H_RIGHT][0], 1, (0, 255, 0), 1)
+                cv.circle(frame, mesh_points[R_H_LEFT][0], 1, (0, 255, 0), 1)
+                cv.circle(frame, mesh_points[R_H_RIGHT][0], 1, (0, 255, 0), 1)
 
                 iris_pos, gaze_ratio = iris_position(iris_center_right, mesh_points[R_H_RIGHT][0], mesh_points[R_H_LEFT][0])
                 eye_cheating = iris_pos != "CENTER"

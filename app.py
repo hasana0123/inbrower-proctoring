@@ -331,7 +331,7 @@ def generate_video_feed(username):
     video_cap = cv.VideoCapture(0)
     
     # New variables for sampling and aggregation
-    sampling_interval = 10  # Process every 10th frame
+    sampling_interval = 1  # Process every 10th frame
     frame_count = 0
     cheating_buffer = []
     buffer_duration = 10  # 1 minute buffer
@@ -391,23 +391,28 @@ def generate_video_feed(username):
                     user_cheating_data[username].append((elapsed_time, majority_cheating))
 
                     color = (0, 0, 255) if majority_cheating else (0, 255, 0)
+                    border_thickness = 10
+                    # Add colored border to the frame
+                    frame = cv.copyMakeBorder(frame, border_thickness, border_thickness, border_thickness, border_thickness, 
+                                              cv.BORDER_CONSTANT, value=color)
                     text = "CHEATING DETECTED" if majority_cheating else "NO CHEATING DETECTED"
                     cv.putText(frame, text, (20, 50), cv.FONT_HERSHEY_SIMPLEX, 1, color, 2)
 
                 # Display individual module results
-                cv.putText(frame, f"Eye: {'Cheating' if eye_cheating else 'OK'}", (20, 100), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
-                cv.putText(frame, f"Head: {'Cheating' if head_cheating else 'OK'}", (20, 130), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
-                cv.putText(frame, f"Sound: {'Detected' if sound_detected else 'Not Detected'}", (20, 160), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
-                cv.putText(frame, f"Multiple Persons: {'Detected' if multiple_persons_detected else 'Not Detected'}", (20, 190), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
-                cv.putText(frame, f"Book: {'Detected' if book_detected else 'Not Detected'}", (20, 220), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
-                cv.putText(frame, f"Phone: {'Detected' if phone_detected else 'Not Detected'}", (20, 250), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+                # cv.putText(frame, f"Eye: {'Cheating' if eye_cheating else 'OK'}", (20, 100), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+                # cv.putText(frame, f"Head: {'Cheating' if head_cheating else 'OK'}", (20, 130), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+                # cv.putText(frame, f"Sound: {'Detected' if sound_detected else 'Not Detected'}", (20, 160), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+                # cv.putText(frame, f"Multiple Persons: {'Detected' if multiple_persons_detected else 'Not Detected'}", (20, 190), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+                # cv.putText(frame, f"Book: {'Detected' if book_detected else 'Not Detected'}", (20, 220), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
+                # cv.putText(frame, f"Phone: {'Detected' if phone_detected else 'Not Detected'}", (20, 250), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 0, 0), 2)
                 
                 time_remaining = max(0, total_time - elapsed_time)
-                cv.putText(frame, f"Time remaining: {int(time_remaining)}s", (20, 310), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
+                # cv.putText(frame, f"Time remaining: {int(time_remaining)}s", (20, 310), cv.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2)
 
                 multiple_persons_detected = False
                 book_detected = False
                 phone_detected = False
+            
 
             _, buffer = cv.imencode('.jpg', frame)
             frame = buffer.tobytes()
