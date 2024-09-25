@@ -334,7 +334,7 @@ def generate_video_feed(username):
     sampling_interval = 1  # Process every 10th frame
     frame_count = 0
     cheating_buffer = []
-    buffer_duration = 10  # 1 minute buffer
+    buffer_duration = 5  # 1 minute buffer
     
     with mp_face_mesh.FaceMesh(max_num_faces=1, refine_landmarks=True, min_detection_confidence=0.5, min_tracking_confidence=0.5) as face_mesh:
         while video_feed_active:
