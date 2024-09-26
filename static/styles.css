@@ -46,7 +46,6 @@ body {
     display: flex;
     justify-content: center;
     flex-direction: row;
-    border: 2px solid #000000;
     padding: 5px;
     /* margin: 0; */
     width: 800px;
@@ -458,7 +457,7 @@ select {
 
 .dashboard .adminContent
 {
-    /* border: 2px solid red; */
+    border: 2px solid red;
     display: flex;
     flex-direction: column;
     /* justify-content: center; */
@@ -471,11 +470,10 @@ select {
 
 .dashboard .adminContent h1{
     text-align: center;
-    /* border: 2px solid white; */
-    padding: 30px;
+    padding: 20px;
     width: 90%;
     border-radius: 10px;
-
+    
     background-color: #0f901a;
     color: rgb(251, 245, 245);
 }
@@ -492,15 +490,8 @@ select {
 
 .content {
     display: flex;
-    flex: 1;
-    padding: 20px;
-    /* width: calc(100% - 480px); */
     width: 90%;
-    margin-top: 100px; /* Added margin to account for fixed header
-    /* position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 1000; */
+    z-index: 1000; 
 } 
 
 .question-list {
@@ -580,11 +571,16 @@ li {
     margin: 4px 2px;
     cursor: pointer;
     border-radius: 4px;
+    width: 40%;
 }
 
 .user-button:hover {
     background-color: #45a049;
 }
+.user-button:focus {
+    background-color: #9ba045;
+}
+
 
 #graph-container {
     margin-top: 20px;
