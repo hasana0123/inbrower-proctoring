@@ -149,6 +149,34 @@
             text-align: center; /* Center align the heading */
             margin: 10px 0; /* Reduced spacing above and below the heading */
         }
+
+        .form-actions {
+            display: flex;
+            justify-content: center; /* Align buttons to the right */
+            margin-top: 10px; /* Add spacing above buttons */
+        }
+        
+        .form-button {
+            padding: 10px 20px;
+            margin-left: 10px; /* Add some space between the buttons */
+            font-size: 18px;
+            background-color: #009688; /* Matching button color */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+        
+        .form-button:hover {
+            background-color: #00796b;
+        }
+        
+        .form-button:active {
+            background-color: #004d40;
+            transform: translateY(2px);
+        }        
+
     </style>
 </head>
 <body>
@@ -159,14 +187,21 @@
         <div class="content questions-blur">
             <div class="interaction-block" id="interactionBlock"></div>
             <div class="question-list">
-                <h2>General Knowledge Questions</h2>
-                <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSc8xCbgchE2A97_tPbQS6UgT-_V_7dy9NpE8gcG-rAEj-qnkg/viewform?embedded=true" 
-                width="640" 
-                height="1263" 
-                frameborder="0" 
-                marginheight="0" 
-                marginwidth="0">
-                </iframe>
+                <h2 style="text-align: center;">General Knowledge Questions</h2>
+                <div class="iframe-container" style="text-align: center;">
+                    <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSc8xCbgchE2A97_tPbQS6UgT-_V_7dy9NpE8gcG-rAEj-qnkg/viewform?embedded=true" 
+                    width="100%" 
+                    height="800" 
+                    frameborder="0" 
+                    marginheight="0"    
+                    marginwidth="0">
+                    </iframe>
+                </div>                
+                <!-- New Buttons -->
+                <div class="form-actions">
+                    <p style="color: black; margin-right: 500px;">Submit Google Forms before returning to login.</p>                    
+                    <button id="returnLoginButton" class="form-button" style="display: none;" onclick="window.location.href='login'">Return to Login</button>
+                </div>   
             </div>
         </div>
         <div class="video-container">
@@ -250,6 +285,7 @@
             function handleFullscreenExit() {
                 // Show warning screen
                 document.getElementById('warningScreen').style.display = 'flex';
+                warningScreen.style.flexDirection = 'column';
                 // Apply blur to the background
                 document.getElementById('content').classList.add('blur');
                 document.getElementById('overlay').style.display = 'block';
@@ -257,18 +293,25 @@
                 toggleButton.style.display = 'none'; // Hide video feed button when exiting fullscreen
                 checkConditions();
             }
-
             // Function to check if both conditions are met
             function checkConditions() {
                 if (isFullscreen && isVideoActive) {
                     document.querySelector('.content').classList.remove('questions-blur'); // Remove blur from questions
                     document.getElementById('interactionBlock').style.display = 'none'; // Allow interaction
+            
+                    // Show the submit and return buttons once the form is accessible
+                    // document.getElementById('submitFormButton').style.display = 'block';
+                    document.getElementById('returnLoginButton').style.display = 'block';
                 } else {
                     document.querySelector('.content').classList.add('questions-blur'); // Ensure questions are blurred
                     document.getElementById('interactionBlock').style.display = 'block'; // Block interaction
+            
+                    // Hide the buttons if the form is not accessible
+                    // document.getElementById('submitFormButton').style.display = 'none';
+                    document.getElementById('returnLoginButton').style.display = 'none';
                 }
             }
-
+            
             // Disable copy-paste and text selection
             function disableCopyPaste() {
                 document.addEventListener('copy', (e) => e.preventDefault());
@@ -411,4 +454,4 @@
         });
     </script>
 </body>
-</html>
+</html> 

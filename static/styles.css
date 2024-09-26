@@ -44,7 +44,7 @@ body {
 }
 #loginContent #allContent {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     flex-direction: row;
     padding: 5px;
     /* margin: 0; */
@@ -80,7 +80,7 @@ body {
     /* justify-content:start; */
 }
 
-.login-container {
+#loginContent #allContent .login-container {
     z-index: 2;
     text-align: center;
     /* border: 5px solid green;  */
@@ -91,13 +91,14 @@ body {
     justify-content: space-evenly;
 }
 
-.login-title {
+#loginContent #allContent .login-title {
     font-size: 40px;
+    font-family: 'Times New Roman', Times, serif;
     /* border: 2px solid red; */
     padding:0 ;
     margin: 0;
 }
-.login-container form{
+#loginContent #allContent .login-container form{
   padding: 0;
   /* border: 2px solid red; */
   width: 300px;
@@ -232,7 +233,8 @@ body {
     /* background-color: #3a3a3a; */
     /* padding: 20px 0; */
     margin: 0;
-    background-image: url(./images/scheduleBg.jpg);
+    /* background-image: url('static\images\scheduleBg.jpg'); */
+    background-image: url("/static/images/scheduleBg.jpg") !important;
     position: relative;
     background-position: center;
     background-repeat: repeat-y;
@@ -457,7 +459,7 @@ select {
 
 .dashboard .adminContent
 {
-    border: 2px solid red;
+    /* border: 2px solid red; */
     display: flex;
     flex-direction: column;
     /* justify-content: center; */
@@ -470,15 +472,19 @@ select {
 
 .dashboard .adminContent h1{
     text-align: center;
+    /* border: 2px solid white; */
     padding: 20px;
     width: 90%;
     border-radius: 10px;
-    
+
     background-color: #0f901a;
     color: rgb(251, 245, 245);
 }
 
 .header {
+    /* border: 2px solid #000; */
+    background-color: #2980b9;
+    color: white;
     padding: 20px;
     text-align: center;
     width: calc(100% - 480px);
@@ -490,8 +496,15 @@ select {
 
 .content {
     display: flex;
+    flex: 1;
+    padding: 20px;
+    /* width: calc(100% - 480px); */
     width: 90%;
-    z-index: 1000; 
+    /* margin-top: 100px; /* Added margin to account for fixed header */
+    /* position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000; */
 } 
 
 .question-list {
@@ -564,6 +577,7 @@ li {
     border: none;
     color: white;
     padding: 10px 20px;
+    width: 40%;
     text-align: center;
     text-decoration: none;
     display: inline-block;
@@ -581,6 +595,10 @@ li {
     background-color: #9ba045;
 }
 
+
+.user-button:focus {
+    background-color: #28642b;
+}
 
 #graph-container {
     margin-top: 20px;
